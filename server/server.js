@@ -1,11 +1,23 @@
+
 const path = require('path');
 require('dotenv').config({ quiet: true, path: path.join(__dirname, '..', '.env') });
+ 
+// Temporary diagnostic — safely logs the DATABASE_URL's host/user/port
+// without exposing the password, to confirm the server is actually
+// reading the value you expect it to. Remove this once the connection
+// is confirmed working.
+if (process.env.DATABASE_URL) {
+  const masked = process.env.DATABASE_URL.replace(/:([^:@]+)@/, ':***@');
+  console.log('[startup diagnostic] DATABASE_URL seen by Node:', masked);
+} else {
+  console.log('[startup diagnostic] DATABASE_URL is NOT SET at all — process.env.DATABASE_URL is undefined/empty.');
+}
 const { startJobTimeoutSweep } = require('./services/jobTimeoutSweep');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-
+ 
 const authRoutes = require('./routes/auth');
 const toolsRoutes = require('./routes/tools');
 const dashboardRoutes = require('./routes/dashboard');
@@ -15,10 +27,16 @@ const bulkRoutes = require('./routes/bulk');
 const apiKeyRoutes = require('./routes/apiKey');
 const billingWebhookRoutes = require('./routes/billingWebhook');
 const billingRoutes = require('./routes/billing');
-
+ 
 const app = express();
+ 
+// Hostinger (like most hosting platforms) sits the app behind a reverse
+// proxy, which adds an X-Forwarded-For header showing the real visitor
+// IP. Without this setting, express-rate-limit can't reliably tell
+// visitors apart by IP, and Express logs a warning about it.
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 4000;
-
+ 
 // CRITICAL: the billing webhook route must be mounted here, BEFORE
 // express.json() below — signature verification needs the exact raw
 // bytes Lemon Squeezy signed. If express.json() runs first, it consumes
@@ -27,7 +45,7 @@ const PORT = process.env.PORT || 4000;
 // (confirmed directly in testing: req.body would already be a parsed
 // object, not a Buffer, breaking the signature check entirely).
 app.use('/api/billing', billingWebhookRoutes);
-
+ 
 // Default helmet CSP only allows images from 'self' and data: — this was
 // silently blocking every tool result: local before/after previews use
 // blob: URLs, and Replicate's actual output images are served from
