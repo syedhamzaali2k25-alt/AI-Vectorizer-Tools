@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Expander — AI Vectorizer Tools</title>
+<meta name="description" content="Extend any photo's edges with AI-generated content that matches seamlessly, powered by FLUX Fill Pro.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AI Image Expander",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much can I expand a photo by?",
+      "acceptedAnswer": { "@type": "Answer", "text": "For best results, the new area added shouldn't be dramatically bigger than the original photo — AI outpainting works best with modest, incremental expansions rather than one huge jump." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to write a prompt?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No — leaving the prompt blank uses a sensible default that extends the background naturally. A custom prompt is only needed for unusual or specific requests." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will it add new people or objects I didn't ask for?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The prompt is built to avoid this — it explicitly instructs the model to continue only the existing background, not introduce new people, faces, or objects." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I bulk process expansions?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Not currently — Bulk Processing supports Background Remover, Upscaler, and Watermark Remover, since each Image Expander job needs its own custom direction and amount, which doesn't fit a simple batch flow." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <span class="credits-remaining-badge is-hidden" id="credits-remaining-badge"></span>
+        <a href="/" class="btn btn-ghost">← All tools</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">↔️ Image Expander · <strong>2 credits</strong> per image</div>
+  <h1>Zoom out.<br>AI fills the frame.</h1>
+  <a href="/bulk" class="btn bulk-promo-btn">📦 Need to process multiple images? Try Bulk Processing →</a>
+</div>
+
+<div class="container tool-container">
+  <div class="tool-panel glass">
+
+    <div id="auth-gate" class="auth-gate">
+      <h3>Sign in to use this tool</h3>
+      <p>Log in or create a free account to start using PixelForge tools.</p>
+      <div class="auth-gate-actions">
+        <a href="/login" class="btn btn-primary">Log in</a>
+        <a href="/signup" class="btn btn-ghost">Sign up free</a>
+      </div>
+    </div>
+
+    <div id="upload-stage" class="is-hidden upload-stage-inner">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon">↑</div>
+        <h3>Drop an image, or click to browse</h3>
+        <p>Then choose which edges to extend.</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" class="file-input-hidden">
+    </div>
+
+    <div id="setup-stage" class="is-hidden setup-stage-inner">
+      <div class="side-by-side side-by-side-tight">
+        <div class="pane pane-relative">
+          <img id="preview-img" src="" alt="Preview">
+          <button class="image-remove-x" id="setup-remove-btn" title="Remove this image, pick another" aria-label="Remove image">✕</button>
+        </div>
+        <div class="expand-info-col">
+          <p class="expand-info-text">
+            Choose how many pixels to extend on each side. At least one side must be greater than 0 —
+            and for AI to generate convincing new content, use <strong>at least 100px</strong> on any
+            side you expand.
+          </p>
+        </div>
+      </div>
+
+      <div class="expand-grid">
+        <div class="expand-field">
+          <label>Left (px)</label>
+          <input type="number" id="dir-left" min="0" max="2000" value="0">
+        </div>
+        <div class="expand-field">
+          <label>Right (px)</label>
+          <input type="number" id="dir-right" min="0" max="2000" value="0">
+        </div>
+        <div class="expand-field">
+          <label>Up (px)</label>
+          <input type="number" id="dir-up" min="0" max="2000" value="0">
+        </div>
+        <div class="expand-field">
+          <label>Down (px)</label>
+          <input type="number" id="dir-down" min="0" max="2000" value="0">
+        </div>
+        <div class="expand-field expand-prompt">
+          <label>Custom prompt (optional) — leave blank for good automatic results</label>
+          <input type="text" id="prompt-input" placeholder="e.g. continue the ocean and horizon (only needed for unusual requests)">
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-primary" id="expand-btn">Expand image</button>
+        <button class="btn btn-ghost" id="start-over-btn">Start over</button>
+      </div>
+    </div>
+
+    <div id="processing-stage" class="is-hidden processing-panel">
+      <div class="spinner-ring"></div>
+      <h3>Expanding your image…</h3>
+      <p>This usually takes 10-20 seconds.</p>
+      <button class="btn btn-ghost cancel-btn" id="cancel-btn">✕ Cancel, pick a different image</button>
+    </div>
+
+    <div id="result-stage" class="is-hidden result-panel">
+      <div class="side-by-side">
+        <div class="pane">
+          <div>
+            <div class="pane-label">Before</div>
+            <img id="result-before" src="" alt="Original">
+          </div>
+        </div>
+        <div class="pane">
+          <div>
+            <div class="pane-label">After</div>
+            <img id="result-after" src="" alt="Expanded">
+          </div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <a class="btn btn-primary" id="download-btn" download="expanded.png">Download PNG</a>
+        <button class="btn btn-ghost" id="expand-again-btn">Expand another</button>
+        <span class="credits-label-text" id="credits-label"></span>
+      </div>
+    </div>
+
+    <div id="error-banner" class="error-banner is-hidden"></div>
+  </div>
+</div>
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">Explore more</span>
+    <h2>Other tools</h2>
+  </div>
+  <div class="other-tools-grid">
+    <a href="/background-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/Background-remover.png" alt="Background-remover">
+      </div>
+      <h4>Background Remover</h4>
+      <p>Remove any background in one click</p>
+    </a>
+    <a href="/watermark-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/watermark-remover.png" alt="Watermark-remover">
+      </div>
+      <h4>Watermark Remover</h4>
+      <p>Watermarks gone, automatically</p>
+    </a>
+    <a href="/image-upscaler" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-upscaler.png" alt="Image-Upscaler">
+      </div>
+      <h4>Image Upscaler</h4>
+      <p>Sharper photos, up to 4x larger</p>
+    </a>
+    <a href="/image-recolor" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-recolor.png" alt="Image-recolor">
+      </div>
+      <h4>Image Recolor</h4>
+      <p>Recolor any object instantly — free</p>
+    </a>
+    <a href="/svg-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/svg-converter.png" alt="SVG Converter">
+      </div>
+      <h4>SVG Converter</h4>
+      <p>Photo to scalable vector — free</p>
+    </a>
+    <a href="/vector-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/vectorizer.png" alt="Vectorizer">
+      </div>
+      <h4>Vectorizer</h4>
+      <p>AI vectorization — free</p>
+    </a>
+  </div>
+</div>
+
+<div class="container section section-first">
+  <div class="section-head">
+    <span class="section-eyebrow">How it works</span>
+    <h2>AI outpainting, explained</h2>
+    <p class="sub">Extend a photo's canvas and let AI generate new content that matches the original seamlessly.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <div class="feature-num">01</div>
+      <h3>Upload your photo</h3>
+      <p>Any PNG, JPG, or WebP — a portrait that's too tightly cropped, or a landscape you want wider.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">02</div>
+      <h3>Choose which edges to extend</h3>
+      <p>Pick pixel amounts for left, right, up, and down — FLUX Fill Pro generates new content matching the existing lighting, colors, and style.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">03</div>
+      <h3>Download the expanded photo</h3>
+      <p>Get back a larger canvas with a seamless extension — ready for a different aspect ratio or more breathing room in your composition.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Use cases</span>
+    <h2>Who uses AI image expansion?</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <h3>Social media &amp; ads</h3>
+      <p>Reformat a photo to fit a different aspect ratio — square, portrait, or widescreen — without cropping out the subject.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Product &amp; lifestyle photos</h3>
+      <p>Add more background around a tightly-framed product shot to give a listing or ad more visual breathing room.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Print &amp; design layouts</h3>
+      <p>Extend a photo to fill a print size or design template it wasn't originally shot for.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">How much can I expand a photo by?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>For best results, the new area added shouldn't be dramatically bigger than the original photo — AI outpainting works best with modest, incremental expansions rather than one huge jump.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Do I need to write a prompt?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>No — leaving the prompt blank uses a sensible default that extends the background naturally. A custom prompt is only needed for unusual or specific requests.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Will it add new people or objects I didn't ask for?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>The prompt is built to avoid this — it explicitly instructs the model to continue only the existing background, not introduce new people, faces, or objects.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Can I bulk process expansions?</button>
+      <div class="faq-answer"><p>Not currently — Bulk Processing supports Background Remover, Upscaler, and Watermark Remover, since each Image Expander job needs its own custom direction and amount, which doesn't fit a simple batch flow.</p></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/job-poller.js"></script>
+<script src="/assets/js/expand.js"></script>
+<script src="/assets/js/credits-badge.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vectorizer — AI Vectorizer Tools</title>
+<meta name="description" content="Convert logos and line art into crisp, infinitely scalable vector SVG paths. Free, runs entirely in your browser.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Vectorizer",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this free?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Vectorizer runs entirely in your browser, so there's no cost and no credits required." }
+    },
+    {
+      "@type": "Question",
+      "name": "How is this different from the SVG Converter tool?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Both use the same underlying Vector Trace Engine — they're offered as separate tools since people search for \"vectorize an image\" and \"convert to SVG\" as distinct tasks, even though the technology is shared." }
+    },
+    {
+      "@type": "Question",
+      "name": "What kind of images work best?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Simple illustrations, line art, and high-contrast images trace the cleanest. Complex photos produce a much more complex, less useful vector result." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my image uploaded to a server?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No — the entire process happens on your device. Nothing is sent anywhere." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+       <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="ai vectorizer tools">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-ghost">← All tools</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">✦ Vectorizer · <strong>free</strong> </div>
+  <h1>Logos and line art,<br>vectorized properly.</h1>
+  <p>Built for what vector tracing actually does best — logos, icons, and clean illustrations. Get true SVG shapes: infinitely scalable, individually editable, and a fraction of the file size of a raster image.</p>
+  <a href="/bulk" class="btn bulk-promo-btn">📦 Need to process multiple images? Try Bulk Processing →</a>
+</div>
+
+<div class="container tool-container">
+  <div class="tool-panel glass">
+
+    <div id="auth-gate" class="auth-gate">
+      <h3>Sign in to use this tool</h3>
+      <p>Log in or create a free account to start using PixelForge tools.</p>
+      <div class="auth-gate-actions">
+        <a href="/login" class="btn btn-primary">Log in</a>
+        <a href="/signup" class="btn btn-ghost">Sign up free</a>
+      </div>
+    </div>
+
+    <div id="upload-stage" class="is-hidden upload-stage-inner">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon">↑</div>
+        <h3>Drop a logo or graphic, or click to browse</h3>
+        <p>Works best on flat-color logos, icons, and illustrations.</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" class="file-input-hidden">
+    </div>
+
+    <div id="converting-stage" class="is-hidden processing-panel">
+      <div class="spinner-ring"></div>
+      <h3>Vectorizing…</h3>
+      <p id="converting-filename">—</p>
+      <button class="btn btn-ghost cancel-btn" id="cancel-btn">✕ Cancel, pick a different image</button>
+    </div>
+
+    <div id="result-stage" class="is-hidden result-panel">
+      <div class="pick-frame result-preview-bg" id="result-preview"></div>
+      <div class="result-meta-row">
+        <span id="result-filename">—</span>
+        <span id="result-shapes">—</span>
+      </div>
+      <div class="result-actions">
+        <a class="btn btn-primary" id="download-btn">Download SVG</a>
+        <button class="btn btn-ghost" id="start-over-btn">Vectorize another</button>
+      </div>
+    </div>
+
+    <div id="error-banner" class="error-banner is-hidden"></div>
+  </div>
+</div>
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">Explore more</span>
+    <h2>Other tools</h2>
+  </div>
+  <div class="other-tools-grid">
+    <a href="/background-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/Background-remover.png" alt="Background-remover">
+      </div>
+      <h4>Background Remover</h4>
+      <p>Remove any background in one click</p>
+    </a>
+    <a href="/watermark-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/watermark-remover.png" alt="Watermark-remover">
+      </div>
+      <h4>Watermark Remover</h4>
+      <p>Watermarks gone, automatically</p>
+    </a>
+    <a href="/image-expander" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-expander.png" alt="Image-expander">
+      </div>
+      <h4>Image Expander</h4>
+      <p>Extend any photo's edges seamlessly</p>
+    </a>
+    <a href="/image-recolor" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-recolor.png" alt="Image-recolor">
+      </div>
+      <h4>Image Recolor</h4>
+      <p>Recolor any object instantly — free</p>
+    </a>
+    <a href="/svg-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/svg-converter.png" alt="SVG Converter">
+      </div>
+      <h4>SVG Converter</h4>
+      <p>Photo to scalable vector — free</p>
+    </a>
+    <a href="/image-upscaler" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-upscaler.png" alt="Image-Upscaler">
+      </div>
+      <h4>Image Upscaler</h4>
+      <p>Sharper photos, up to 4x larger</p>
+    </a>
+  </div>
+</div>
+
+<div class="container section section-first">
+  <div class="section-head">
+    <span class="section-eyebrow">How it works</span>
+    <h2>AI vectorization, explained</h2>
+    <p class="sub">Turn a raster image into clean vector paths and shapes — right in your browser, no upload required.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <div class="feature-num">01</div>
+      <h3>Upload your image</h3>
+      <p>Any PNG, JPG, or WebP — illustrations, sketches, and simple graphics vectorize best.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">02</div>
+      <h3>Vectorization runs locally</h3>
+      <p>The same Vector Trace Engine used for SVG conversion processes the image entirely in your browser — nothing uploaded anywhere.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">03</div>
+      <h3>Download your vector file</h3>
+      <p>Get back a clean, scalable vector version — resize it to any dimension without any loss of quality.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Use cases</span>
+    <h2>Who uses an image vectorizer?</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <h3>Illustrators &amp; designers</h3>
+      <p>Convert a hand-drawn sketch or raster illustration into editable vector shapes for further design work.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Print &amp; merchandise</h3>
+      <p>Prepare artwork as scalable vectors for large-format printing, apparel, or promotional products.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Signage &amp; large displays</h3>
+      <p>Scale a graphic up to poster or billboard size without the pixelation a raster image would show.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">Is this free?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — Vectorizer runs entirely in your browser, so there's no cost and no credits required.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">How is this different from the SVG Converter tool?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Both use the same underlying Vector Trace Engine — they're offered as separate tools since people search for "vectorize an image" and "convert to SVG" as distinct tasks, even though the technology is shared.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">What kind of images work best?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Simple illustrations, line art, and high-contrast images trace the cleanest. Complex photos produce a much more complex, less useful vector result.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Is my image uploaded to a server?</button>
+      <div class="faq-answer"><p>No — the entire process happens on your device. Nothing is sent anywhere.</p></div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+>
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/potrace-browser.js"></script>
+<script src="/assets/js/vector-trace-engine.js"></script>
+<script src="/assets/js/vectorize.js"></script>
+</body>
+</html>

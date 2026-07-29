@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Upscaler — AI Vectorizer Tools</title>
+<meta name="description" content="Upscale any image 2x or 4x with AI detail reconstruction">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AI Image Upscaler",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What's the difference between 2x and 4x?",
+      "acceptedAnswer": { "@type": "Answer", "text": "4x produces a larger final image with more added detail, but takes slightly longer to process. 2x is faster and often enough for smaller resolution gaps." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will it fix a blurry or out-of-focus photo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Upscaling adds detail appropriate to a higher resolution, but it can't fully recover detail that was never captured — a genuinely out-of-focus photo will still look soft, just larger." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on non-portrait images?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Real-ESRGAN works on any photo. Face enhancement specifically activates for portraits; other images are upscaled without that step." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I process many images at once?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Pro and Business plans include Bulk Processing, letting you upload up to 10 images at once and download every result as a single ZIP." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <span class="credits-remaining-badge is-hidden" id="credits-remaining-badge"></span>
+        <a href="/" class="btn btn-ghost">← All tools</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">🔍 Image Upscaler · <strong>1 credit</strong> per image</div>
+  <h1>Upscale any photo<br>without losing detail.</h1>
+  <a href="/bulk" class="btn bulk-promo-btn">📦 Need to process multiple images? Try Bulk Processing →</a>
+</div>
+
+<div class="container tool-container">
+  <div class="tool-panel glass">
+
+    <div id="auth-gate" class="auth-gate">
+      <h3>Sign in to use this tool</h3>
+      <p>Log in or create a free account to start using PixelForge tools.</p>
+      <div class="auth-gate-actions">
+        <a href="/login" class="btn btn-primary">Log in</a>
+        <a href="/signup" class="btn btn-ghost">Sign up free</a>
+      </div>
+    </div>
+
+    <div id="upload-stage" class="is-hidden upload-stage-inner">
+      <div class="scale-btn-row">
+        <button class="btn btn-primary scale-btn is-active scale-btn-item" data-scale="2">2x</button>
+        <button class="btn btn-ghost scale-btn scale-btn-item" data-scale="4">4x</button>
+      </div>
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon">↑</div>
+        <h3>Drop an image, or click to browse</h3>
+        <p>PNG, JPG, or WebP · up to 15MB</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" class="file-input-hidden">
+    </div>
+
+    <div id="processing-stage" class="is-hidden processing-panel">
+      <div class="spinner-ring"></div>
+      <h3>Upscaling your image…</h3>
+      <p>This usually takes 10-20 seconds.</p>
+      <button class="btn btn-ghost cancel-btn" id="cancel-btn">✕ Cancel, pick a different image</button>
+    </div>
+
+    <div id="result-stage" class="is-hidden result-panel">
+      <div class="compare-frame" id="compare-frame">
+        <img id="compare-before" src="" alt="Original">
+        <img id="compare-after" src="" alt="Upscaled">
+        <div class="compare-divider" id="compare-divider"></div>
+        <span class="compare-tag compare-tag-left" id="before-tag">Before</span>
+        <span class="compare-tag compare-tag-right" id="after-tag">After</span>
+        <canvas id="upscale-loupe" class="loupe loupe-split" width="220" height="110"></canvas>
+        <span class="loupe-split-label" id="loupe-label-before">BEFORE</span>
+        <span class="loupe-split-label" id="loupe-label-after">AFTER</span>
+      </div>
+      <p class="loupe-hint-text">
+        Hover anywhere on the image for a zoomed side-by-side pixel comparison — the difference is often subtle at normal viewing size.
+      </p>
+      <div class="result-actions">
+        <a class="btn btn-primary" id="download-btn" download="upscaled.png">Download PNG</a>
+        <button class="btn btn-ghost" id="start-over-btn">Upscale another</button>
+        <span class="credits-label-text" id="credits-label"></span>
+      </div>
+    </div>
+
+    <div id="error-banner" class="error-banner is-hidden"></div>
+  </div>
+</div>
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">Explore more</span>
+    <h2>Other tools</h2>
+  </div>
+  <div class="other-tools-grid">
+    <a href="/background-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/Background-remover.png" alt="Background-remover">
+      </div>
+      <h4>Background Remover</h4>
+      <p>Remove any background in one click</p>
+    </a>
+    <a href="/watermark-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/watermark-remover.png" alt="Watermark-remover">
+      </div>
+      <h4>Watermark Remover</h4>
+      <p>Watermarks gone, automatically</p>
+    </a>
+    <a href="/image-expander" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-expander.png" alt="Image-expander">
+      </div>
+      <h4>Image Expander</h4>
+      <p>Extend any photo's edges seamlessly</p>
+    </a>
+    <a href="/image-recolor" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-recolor.png" alt="Image-recolor">
+      </div>
+      <h4>Image Recolor</h4>
+      <p>Recolor any object instantly — free</p>
+    </a>
+    <a href="/svg-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/svg-converter.png" alt="SVG Converter">
+      </div>
+      <h4>SVG Converter</h4>
+      <p>Photo to scalable vector — free</p>
+    </a>
+    <a href="/vector-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/vectorizer.png" alt="Vectorizer">
+      </div>
+      <h4>Vectorizer</h4>
+      <p>AI vectorization — free</p>
+    </a>
+  </div>
+</div>
+
+<div class="container section section-first">
+  <div class="section-head">
+    <span class="section-eyebrow">How it works</span>
+    <h2>AI photo upscaling, explained</h2>
+    <p class="sub">Add real detail back into a low-resolution photo — not just a stretched, blurry enlargement.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <div class="feature-num">01</div>
+      <h3>Upload your photo</h3>
+      <p>Any PNG, JPG, or WebP — old photos, low-res exports, or small product shots all work.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">02</div>
+      <h3>Choose 2× or 4×</h3>
+      <p>Real-ESRGAN reconstructs fine detail at the target resolution, with face enhancement built in for portraits.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">03</div>
+      <h3>Download in full resolution</h3>
+      <p>Get back a sharper, larger image — ready for printing, a larger display, or a higher-res upload requirement.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Use cases</span>
+    <h2>Who uses an AI upscaler?</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <h3>Old &amp; low-res photos</h3>
+      <p>Bring back detail in scanned photos, old phone camera shots, or anything saved at a small size.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>E-commerce &amp; print</h3>
+      <p>Meet a marketplace's minimum resolution requirement, or prepare a photo for print without visible blur.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Social media &amp; portraits</h3>
+      <p>Sharpen a portrait for a profile photo or thumbnail, with face enhancement tuned specifically for people.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">What's the difference between 2× and 4×?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>4× produces a larger final image with more added detail, but takes slightly longer to process. 2× is faster and often enough for smaller resolution gaps.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Will it fix a blurry or out-of-focus photo?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Upscaling adds detail appropriate to a higher resolution, but it can't fully recover detail that was never captured — a genuinely out-of-focus photo will still look soft, just larger.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Does it work on non-portrait images?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — Real-ESRGAN works on any photo. Face enhancement specifically activates for portraits; other images are upscaled without that step.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Can I process many images at once?</button>
+      <div class="faq-answer"><p>Yes — Pro and Business plans include Bulk Processing, letting you upload up to 10 images at once and download every result as a single ZIP. <a href="/bulk">Try Bulk Processing →</a></p></div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/job-poller.js"></script>
+<script src="/assets/js/upscale.js"></script>
+<script src="/assets/js/credits-badge.js"></script>
+
+</body>
+</html>

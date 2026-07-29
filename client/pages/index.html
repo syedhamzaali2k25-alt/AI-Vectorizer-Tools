@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO META -->
+<title>AI Vectorizer — Convert PNG, JPG &amp; WebP to Vector (SVG, EPS, DXF)</title>
+<meta name="description" content="Convert PNG, JPG, or WebP to clean vectors (SVG, EPS, DXF) in seconds. Plus AI background removal, upscaling, and watermark removal — all in one tool. Free to start.">
+<link rel="canonical" href="https://YOURDOMAIN.com/">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI Vectorizer Tools">
+<meta property="og:title" content="AI Vectorizer — Convert PNG, JPG & WebP to Vector (SVG, EPS, DXF)">
+<meta property="og:description" content="Convert images to clean vectors in seconds. Plus AI background removal, upscaling, and watermark removal — all in one tool. Free to start.">
+<meta property="og:url" content="https://YOURDOMAIN.com/">
+<meta property="og:image" content="https://YOURDOMAIN.com/assets/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Vectorizer — Convert PNG, JPG & WebP to Vector">
+<meta name="twitter:description" content="Convert images to clean vectors in seconds, plus background removal, upscaling, and more. Free to start.">
+<meta name="twitter:image" content="https://YOURDOMAIN.com/assets/images/og-cover.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+<!-- SCHEMA: Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "AI Vectorizer Tools",
+  "url": "https://aivectorizertools.com/",
+  "logo": "https://aivectorizertools.com/assets/images/ai-vectorizer-tools-1.png"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AI Vectorizer Tools",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "ratingCount": "2100000"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What counts as a credit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each tool run (one image, one edit) uses a set number of credits, always shown on the tool page before you run it. Background Remover and Upscaler cost 1 credit; Watermark Remover and Image Expander cost 2 credits, since those involve more AI compute per image."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I cancel anytime?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — cancel from your billing settings at any time. You'll keep access through the end of your current billing period."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do unused credits roll over?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Credits reset each billing cycle and don't carry over, so your plan's monthly amount is what's available each month."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there an API?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, available on the Business plan — call any tool directly from your own app with a REST API and per-call billing."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+       <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+      </a>
+      <div class="nav-links">
+        <a href="#tools">Tools</a>
+        <a href="#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="/blog">Blog</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/login" class="btn btn-ghost" id="nav-login-btn">Log in</a>
+        <a href="/signup" class="btn btn-primary" id="nav-signup-btn">Sign up free</a>
+        <div class="nav-user is-hidden" id="nav-user">
+          <a href="/dashboard" class="btn btn-ghost">Dashboard</a>
+          <div class="nav-avatar" id="nav-avatar" title="">?</div>
+          <button class="btn btn-ghost" id="nav-logout-btn">Log out</button>
+        </div>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<header class="container hero">
+  <div>
+    <div class="hero-badge glass">
+      <span class="dot"></span>
+      7 AI tools, one credit balance
+    </div>
+    <h1>Edit, convert &amp; vectorize any image<br>with <span class="grad">a single click.</span></h1>
+    <p class="lead">Convert PNG, JPG, or WebP to vector (SVG, EPS, DXF), remove backgrounds, upscale photos, erase watermarks, recolor objects, and expand canvases — all powered by production AI models, ready in seconds.</p>
+    <div class="hero-actions">
+      <a href="#tools" class="btn btn-primary">Start creating free →</a>
+      <a href="/pricing" class="btn btn-ghost">See pricing</a>
+    </div>
+    <div class="hero-trust">
+      <span><strong>2.1M+</strong> images processed</span>
+      <span><strong>4.9/5</strong> average rating</span>
+      <span><strong>7</strong> tools included</span>
+    </div>
+  </div>
+
+<div class="hero-showcase">
+    <div class="float-card glass card-1">
+      <div class="card-label"><span>Background Remover</span><span>●</span></div>
+      <div class="card-viz viz-bg-remove">
+        <img src="/assets/images/hero-bg-remove-demo.png" alt="AI background remover before and after example" class="card-viz-photo">
+      </div>
+    </div>
+    <div class="float-card glass card-2">
+      <div class="card-label"><span>4x Upscaler</span><span>●</span></div>
+      <div class="card-viz viz-upscale">
+        <img src="/assets/images/img-upscale-blog.png" alt="AI image upscaler before and after example" class="card-viz-photo">
+      </div>
+    </div>
+    <div class="float-card glass card-3">
+      <div class="card-label"><span>Vectorizer</span><span>●</span></div>
+      <div class="card-viz viz-vector">
+        <img src="/assets/images/img-vectore.png" alt="PNG converted to vector SVG logo example" class="card-viz-photo">
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="tools">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Popular tools</span>
+      <h2>Every image tool you need, in one place</h2>
+      <p class="sub">Each one production-grade, backed by leading AI models.</p>
+    </div>
+    <div class="tools-grid">
+      <a href="/background-remover" class="tool-card glass">
+        <div class="tool-icon">
+          <img src="/assets/images/Background-remover.png" alt="AI background remover tool icon">
+        </div>
+        <h3>Background Remover</h3>
+        <p>Remove the background from any image in one click and export a transparent PNG instantly.</p>
+      </a>
+
+      <a href="/image-upscaler" class="tool-card glass">
+          <div class="tool-icon">
+          <img src="/assets/images/image-upscaler.png" alt="AI image upscaler tool icon">
+        </div>
+        <h3>Image Upscaler</h3>
+        <p>Upscale and enhance photos up to 4x with AI detail reconstruction, not just pixel stretching.</p>
+      </a>
+      <a href="/watermark-remover" class="tool-card glass">
+        <div class="tool-icon">
+          <img src="/assets/images/watermark-remover.png" alt="AI watermark remover tool icon">
+        </div>
+        <h3>Watermark Remover</h3>
+        <p>Brush over any watermark or unwanted object and let AI fill it seamlessly.</p>
+      </a>
+      <a href="/image-recolor" class="tool-card glass">
+        <div class="tool-icon">
+          <img src="/assets/images/image-recolor.png" alt="AI image recolor tool icon" >
+        </div>
+        <h3>Image Recolor</h3>
+        <p>Click any color in an image and swap it for another — free, runs in your browser.</p>
+      </a>
+      <a href="/image-expander" class="tool-card glass">
+        <div class="tool-icon">
+          <img src="/assets/images/image-expander.png" alt="AI image expander tool icon">
+        </div>
+        <h3>Image Expander</h3>
+        <p>Extend and expand any photo's edges with AI-generated content that matches seamlessly.</p>
+      </a>
+      <a href="/svg-converter" class="tool-card glass">
+        <div class="tool-icon">
+          <img src="/assets/images/svg-converter.png" alt="PNG to SVG converter tool icon">
+        </div>
+        <h3>SVG Converter</h3>
+        <p>Convert any PNG, JPG, or WebP to a clean, scalable SVG — free, runs in your browser.</p>
+      </a>
+      <a href="/vector-converter" class="tool-card glass">
+        <div class="tool-icon">
+          <img src="/assets/images/vectorizer.png" alt="Image to vector converter tool icon">
+        </div>
+        <h3>Vector Converter</h3>
+        <p>Convert images to vector — turn logos and line art into crisp SVG, EPS, or DXF paths.</p>
+      </a>
+      <a href="#" class="tool-card glass" style="display:flex;align-items:center;justify-content:center;text-align:center;">
+        <div>
+          <h3 style="margin-bottom:6px;">More on the way</h3>
+          <p>New tools ship every month.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Why AI Vectorizer Tools</span>
+      <h2>Built for speed, quality, and scale</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card glass">
+        <div class="feature-num">01</div>
+        <h3>Production AI models</h3>
+        <p>Every tool runs on best-in-class models, not experimental demos — the same quality you'd expect from dedicated single-purpose apps.</p>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-num">02</div>
+        <h3>Batch processing</h3>
+        <p>Upload dozens of images at once and apply the same edit across all of them in a single run.</p>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-num">03</div>
+        <h3>Full history &amp; projects</h3>
+        <p>Every edit is saved to your account, so you can revisit, re-download, or continue past work anytime.</p>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-num">04</div>
+        <h3>API access</h3>
+        <p>Wire any tool directly into your own product with a simple REST API and per-call billing.</p>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-num">05</div>
+        <h3>Cloud storage included</h3>
+        <p>Your projects and results are stored securely and stay accessible across devices.</p>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-num">06</div>
+        <h3>Fair, transparent credits</h3>
+        <p>See exactly what each tool costs before you run it — no surprise charges, ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Pricing</span>
+      <h2>Simple plans that scale with you</h2>
+      <p class="sub">Start free. Upgrade only when you need more.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card glass">
+        <div class="price-name">Free</div>
+        <div class="price-amount">$0<span>/month</span></div>
+        <div class="price-desc">For trying every tool out</div>
+        <ul class="price-features">
+          <li>3 free conversions per month</li>
+          <li>All 7 tools included</li>
+          <li>Standard processing speed</li>
+          <li>720p export resolution</li>
+        </ul>
+        <a href="/signup" class="btn btn-ghost" style="width:100%;" id="plan-free-btn">Get started</a>
+      </div>
+      <div class="price-card featured glass">
+        <div class="price-name">Pro</div>
+        <div class="price-amount">$19<span>/month</span></div>
+        <div class="price-desc">For regular creators</div>
+        <ul class="price-features">
+          <li>500 credits per month</li>
+          <li>All 7 tools included</li>
+          <li>Priority processing speed</li>
+          <li>Full resolution export</li>
+          <li>Batch processing</li>
+          <li>Project history</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%;" id="plan-pro-btn" data-plan="pro">Start free trial</button>
+      </div>
+      <div class="price-card glass">
+        <div class="price-name">Business</div>
+        <div class="price-amount">$79<span>/month</span></div>
+        <div class="price-desc">For teams and high volume</div>
+        <ul class="price-features">
+          <li>3,000 credits per month</li>
+          <li>All 7 tools + API access</li>
+          <li>Fastest processing speed</li>
+          <li>Full resolution export</li>
+          <li>Team seats</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%;" id="plan-business-btn" data-plan="business">Contact sales</button>
+      </div>
+    </div>
+    <div id="pricing-error-banner" class="error-banner is-hidden" style="max-width:600px; margin:24px auto 0;"></div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">FAQ</span>
+      <h2>Questions, answered</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item glass">
+        <button class="faq-question">What counts as a credit?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><p>Each tool run (one image, one edit) uses a set number of credits, always shown on the tool page before you run it. Background Remover and Upscaler cost 1 credit; Watermark Remover and Image Expander cost 2 credits, since those involve more AI compute per image.</p></div>
+      </div>
+      <div class="faq-item glass">
+        <button class="faq-question">Can I cancel anytime?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><p>Yes — cancel from your billing settings at any time. You'll keep access through the end of your current billing period.</p></div>
+      </div>
+      <div class="faq-item glass">
+        <button class="faq-question">Do unused credits roll over?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><p>Credits reset each billing cycle and don't carry over, so your plan's monthly amount is what's available each month.</p></div>
+      </div>
+      <div class="faq-item glass">
+        <button class="faq-question">Is there an API?<span class="faq-icon">+</span></button>
+        <div class="faq-answer"><p>Yes, available on the Business plan — call any tool directly from your own app with a REST API and per-call billing.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Testimonials</span>
+      <h2>Loved by creators and teams</h2>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card glass">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="quote">"Cut our product photo editing time from hours to minutes. The background remover alone paid for the subscription."</p>
+        <div class="testimonial-person">
+          <div class="testimonial-avatar">M</div>
+          <div><div class="testimonial-name">Maya Chen</div><div class="testimonial-role">E-commerce founder</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card glass">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="quote">"The vectorizer handles our logo work better than tools that cost 3x as much. It's become part of our daily workflow."</p>
+        <div class="testimonial-person">
+          <div class="testimonial-avatar">D</div>
+          <div><div class="testimonial-name">Diego Ramos</div><div class="testimonial-role">Brand designer</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card glass">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="quote">"Having every tool under one credit balance instead of five subscriptions is such a relief. Simple and it just works."</p>
+        <div class="testimonial-person">
+          <div class="testimonial-avatar">S</div>
+          <div><div class="testimonial-name">Sara Ibrahim</div><div class="testimonial-role">Content creator</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="blog">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">Blog</span>
+      <h2>Guides and comparisons</h2>
+    </div>
+<div class="blog-grid">
+    <a href="/blog/how-to-convert-a-jpg-logo-to-vector-without-losing-quality" class="blog-card glass">
+      <img src="/assets/images/img-vectore.png" alt="Original photo next to its vectorized version" class="blog-card-image-photo">
+      <div class="blog-card-body">
+        <span class="blog-tag">Guide</span>
+        <h3>How to Convert a JPG Logo to Vector Without Losing Quality</h3>
+        <p>Why JPG logos break down when scaled, and how vector tracing fixes it for good.</p>
+      </div>
+    </a>
+    <a href="/blog/how-ai-background-removers-are-changing-the-way-designers-work" class="blog-card glass">
+      <img src="/assets/images/hero-bg-remove-demo.png" alt="Before and after example of AI background removal" class="blog-card-image-photo">
+      <div class="blog-card-body">
+        <span class="blog-tag">Guide</span>
+        <h3>How AI Background Removers Are Changing the Way Designers Work</h3>
+        <p>A task that used to eat hours in Photoshop now takes seconds — here's what actually changed.</p>
+      </div>
+    </a>
+    <a href="/blog/how-to-upscale-images-using-ai" class="blog-card glass">
+      <img src="/assets/images/img-upscale-blog.png" alt="Before and after example of AI image upscaling" class="blog-card-image-photo">
+      <div class="blog-card-body">
+        <span class="blog-tag">Guide</span>
+        <h3>How to Upscale Images Using AI</h3>
+        <p>How AI upscaling actually works, and how to choose the right tool for the job.</p>
+      </div>
+    </a>
+  
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>Ready to edit smarter?</h2>
+      <p>Start free — no credit card required.</p>
+      <a href="/signup" class="btn btn-ghost">Create your account</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/pricing-checkout.js"></script>
+</body>
+</html>

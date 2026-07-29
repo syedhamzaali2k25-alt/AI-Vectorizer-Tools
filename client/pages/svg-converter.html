@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG Converter — AI Vectorizer Tools</title>
+<meta name="description" content="Turn any PNG or JPG into a clean, scalable SVG in one pass. Free, runs entirely in your browser.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "SVG Converter",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this free?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — SVG conversion runs entirely in your browser, so there's no cost and no credits required." }
+    },
+    {
+      "@type": "Question",
+      "name": "What kind of images convert best?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Simple logos, line art, and high-contrast images with clear edges trace the cleanest. Complex photos with lots of gradients and fine detail will produce a much more complex (and less useful) vector file." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will it preserve exact colors?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The tracing engine groups similar colors into distinct vector regions — extremely subtle gradients get simplified into flatter color bands rather than preserved pixel-for-pixel." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my image uploaded to a server?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No — the entire conversion happens on your device. Nothing is sent anywhere." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+       <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="ai vectorizer tools">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-ghost">← All tools</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">🖼️ SVG Converter · <strong>free</strong></div>
+  <h1>PNG or JPG.<br>Straight to SVG.</h1>
+  <p>Drop an image and get a clean, scalable vector back in seconds. No credits used — this one runs entirely on your device.</p>
+  <a href="/bulk" class="btn bulk-promo-btn">📦 Need to process multiple images? Try Bulk Processing →</a>
+</div>
+
+<div class="container tool-container">
+  <div class="tool-panel glass">
+
+    <div id="auth-gate" class="auth-gate">
+      <h3>Sign in to use this tool</h3>
+      <p>Log in or create a free account to start using PixelForge tools.</p>
+      <div class="auth-gate-actions">
+        <a href="/login" class="btn btn-primary">Log in</a>
+        <a href="/signup" class="btn btn-ghost">Sign up free</a>
+      </div>
+    </div>
+
+    <div id="upload-stage" class="is-hidden upload-stage-inner">
+      <div class="scale-btn-row">
+        <button class="btn btn-primary mode-btn is-active mode-btn-item" data-mode="trace">Vector trace</button>
+        <button class="btn btn-ghost mode-btn mode-btn-item" data-mode="embed">Exact colors</button>
+      </div>
+      <p id="mode-explainer" class="mode-explainer-text">
+        Traces the image into flat-color vector shapes — smaller file, but some color shift is unavoidable (SVG shapes can only be flat colors).
+      </p>
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon">↑</div>
+        <h3>Drop an image, or click to browse</h3>
+        <p>We'll convert it straight to SVG.</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" class="file-input-hidden">
+    </div>
+
+    <div id="converting-stage" class="is-hidden processing-panel">
+      <div class="spinner-ring"></div>
+      <h3>Converting to SVG…</h3>
+      <p id="converting-filename">—</p>
+      <button class="btn btn-ghost cancel-btn" id="cancel-btn">✕ Cancel, pick a different image</button>
+    </div>
+
+    <div id="result-stage" class="is-hidden result-panel">
+      <div class="pick-frame result-preview-bg" id="result-preview"></div>
+      <div class="result-meta-row">
+        <span id="result-filename">—</span>
+        <span id="result-shapes">—</span>
+      </div>
+      <div class="result-actions">
+        <a class="btn btn-primary" id="download-btn">Download SVG</a>
+        <button class="btn btn-ghost" id="start-over-btn">Convert another</button>
+      </div>
+    </div>
+
+    <div id="error-banner" class="error-banner is-hidden"></div>
+  </div>
+</div>
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">Explore more</span>
+    <h2>Other tools</h2>
+  </div>
+  <div class="other-tools-grid">
+    <a href="/background-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/Background-remover.png" alt="Background-remover">
+      </div>
+      <h4>Background Remover</h4>
+      <p>Remove any background in one click</p>
+    </a>
+    <a href="/watermark-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/watermark-remover.png" alt="Watermark-remover">
+      </div>
+      <h4>Watermark Remover</h4>
+      <p>Watermarks gone, automatically</p>
+    </a>
+    <a href="/image-expander" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-expander.png" alt="Image-expander">
+      </div>
+      <h4>Image Expander</h4>
+      <p>Extend any photo's edges seamlessly</p>
+    </a>
+    <a href="/image-recolor" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-recolor.png" alt="Image-recolor">
+      </div>
+      <h4>Image Recolor</h4>
+      <p>Recolor any object instantly — free</p>
+    </a>
+    <a href="/image-upscaler" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-upscaler.png" alt="Image-Upscaler">
+      </div>
+      <h4>Image Upscaler</h4>
+      <p>Sharper photos, up to 4x larger</p>
+    </a>
+    <a href="/vector-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/vectorizer.png" alt="Vectorizer">
+      </div>
+      <h4>Vectorizer</h4>
+      <p>AI vectorization — free</p>
+    </a>
+  </div>
+</div>
+
+<div class="container section section-first">
+  <div class="section-head">
+    <span class="section-eyebrow">How it works</span>
+    <h2>Photo to SVG, explained</h2>
+    <p class="sub">Convert a raster image into a scalable vector graphic — right in your browser, no upload required.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <div class="feature-num">01</div>
+      <h3>Upload your image</h3>
+      <p>Any PNG, JPG, or WebP — logos, simple illustrations, and high-contrast images convert best.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">02</div>
+      <h3>Vector tracing runs locally</h3>
+      <p>The Vector Trace Engine converts pixel data into clean vector paths entirely in your browser — nothing is uploaded anywhere.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">03</div>
+      <h3>Download your SVG</h3>
+      <p>Get a scalable .svg file that resizes to any dimension without losing quality — ideal for logos and print.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Use cases</span>
+    <h2>Who converts images to SVG?</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <h3>Logo &amp; branding</h3>
+      <p>Turn a raster logo (PNG or JPG) into a scalable vector for use on business cards, signage, or merchandise at any size.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Web &amp; app icons</h3>
+      <p>Convert an icon into SVG for crisp rendering at any resolution, without shipping multiple raster sizes.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Laser cutting &amp; CNC</h3>
+      <p>Prepare vector outlines from a photo or sketch for cutting, engraving, or CNC toolpaths.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">Is this free?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — SVG conversion runs entirely in your browser, so there's no cost and no credits required.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">What kind of images convert best?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Simple logos, line art, and high-contrast images with clear edges trace the cleanest. Complex photos with lots of gradients and fine detail will produce a much more complex (and less useful) vector file.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Will it preserve exact colors?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>The tracing engine groups similar colors into distinct vector regions — extremely subtle gradients get simplified into flatter color bands rather than preserved pixel-for-pixel.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Is my image uploaded to a server?</button>
+      <div class="faq-answer"><p>No — the entire conversion happens on your device. Nothing is sent anywhere.</p></div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/potrace-browser.js"></script>
+<script src="/assets/js/vector-trace-engine.js"></script>
+<script src="/assets/js/svg-converter.js"></script>
+</body>
+</html>

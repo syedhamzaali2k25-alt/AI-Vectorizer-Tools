@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — AI Vectorizer Tools</title>
+<meta name="description" content="Your account, credits, and tool usage history.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Dashboard",
+  "url": "https://aivectorizertools.com/dashboard"
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-ghost">← Home</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <h1 id="dashboard-heading">Your dashboard</h1>
+  <p>Account, credits, and recent tool usage — all in one place.</p>
+</div>
+
+<div class="container" style="padding-bottom:100px;">
+
+  <div id="auth-gate" class="auth-gate glass tool-panel">
+    <h3>Sign in to view your dashboard</h3>
+    <p>Log in or create a free account to see your credits and usage history.</p>
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:6px;">
+      <a href="/login" class="btn btn-primary">Log in</a>
+      <a href="/signup" class="btn btn-ghost">Sign up free</a>
+    </div>
+  </div>
+
+  <div id="dashboard-content" class="is-hidden">
+
+    <div class="dash-summary glass">
+      <div class="dash-summary-item">
+        <span class="dash-label">Signed in as</span>
+        <span class="dash-value" id="dash-email">—</span>
+      </div>
+      <div class="dash-summary-item">
+        <span class="dash-label">Plan</span>
+        <span class="dash-value" id="dash-plan">—</span>
+      </div>
+      <div class="dash-summary-item">
+        <span class="dash-label">Credits remaining</span>
+        <span class="dash-value dash-value-accent" id="dash-credits">—</span>
+      </div>
+      <a href="/pricing" class="btn btn-primary">Upgrade plan</a>
+    </div>
+
+    <!--
+      API Key section — Business plan only. Hidden by default; dashboard.js
+      shows it after loading the user's plan, so Free/Pro users never see
+      an empty or broken-looking section.
+    -->
+    <div id="api-key-section" class="dash-summary glass is-hidden" style="margin-top:24px; flex-direction:column; align-items:flex-start; gap:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px;">
+        <div>
+          <span class="dash-label">API Key</span>
+          <p style="font-size:13px; color:var(--text-secondary); margin-top:4px; max-width:52ch;">
+            Call PixelForge tools directly from your own code, using this key instead of a login session. Business plan only.
+          </p>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" id="api-key-generate-btn">Generate new key</button>
+          <button class="btn btn-ghost" id="api-key-revoke-btn" style="display:none;">Revoke</button>
+        </div>
+      </div>
+      <div id="api-key-display" style="width:100%; display:none;">
+        <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:10px; padding:12px 16px; font-family:monospace; font-size:13.5px; display:flex; justify-content:space-between; align-items:center; gap:12px; word-break:break-all;">
+          <span id="api-key-value">—</span>
+          <button class="btn btn-ghost" id="api-key-copy-btn" style="flex-shrink:0; padding:6px 12px; font-size:12px;">Copy</button>
+        </div>
+        <p id="api-key-note" style="font-size:12px; color:var(--text-secondary); margin-top:8px;"></p>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:56px; text-align:left;">
+      <h2 style="font-size:24px;">Recent tool usage</h2>
+    </div>
+    <div class="dash-table-wrap glass">
+      <table class="dash-table" id="usage-table">
+        <thead>
+          <tr><th>Tool</th><th>Status</th><th>Credits</th><th>Date</th><th></th></tr>
+        </thead>
+        <tbody id="usage-tbody">
+          <tr><td colspan="5" class="dash-empty">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head" style="margin-top:56px; text-align:left;">
+      <h2 style="font-size:24px;">Credit history</h2>
+    </div>
+    <div class="dash-table-wrap glass">
+      <table class="dash-table" id="credit-table">
+        <thead>
+          <tr><th>Change</th><th>Reason</th><th>Balance after</th><th>Date</th></tr>
+        </thead>
+        <tbody id="credit-tbody">
+          <tr><td colspan="4" class="dash-empty">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div id="error-banner" class="error-banner is-hidden" style="max-width:900px; margin:24px auto 0;"></div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="../assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

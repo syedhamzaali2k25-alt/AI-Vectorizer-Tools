@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Recolor — AI Vectorizer Tools</title>
+<meta name="description" content="Click any color in an image and swap it for another. Free, runs entirely in your browser.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AI Image Recolor",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this really free?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Recolor runs entirely in your browser, so there's no server processing cost and no credits required." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the tolerance slider do?",
+      "acceptedAnswer": { "@type": "Answer", "text": "It controls how similar a pixel's color needs to be to your selected sample to get recolored. A higher tolerance catches more shading variation but risks affecting nearby unrelated colors." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on photos with gradients or shadows?",
+      "acceptedAnswer": { "@type": "Answer", "text": "It works best on relatively flat, consistent colors. Heavy gradients or shadows within the same object may need a higher tolerance, or may not fully match with a single click." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my image uploaded to a server?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No — Recolor processes the image entirely on your device using the canvas element. Nothing is sent anywhere." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+       <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="ai vectorizer tools">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-ghost">← All tools</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">🎨 Image Recolor · <strong>free</strong></div>
+  <h1>Click a color.<br>Swap it out.</h1>
+  <p>Pick any color straight off the image, choose a replacement, and dial in how wide a range of similar shades gets swapped with it. No credits used — this one runs entirely on your device.</p>
+  <a href="/bulk" class="btn bulk-promo-btn">📦 Need to process multiple images? Try Bulk Processing →</a>
+</div>
+
+<div class="container tool-container">
+  <div class="tool-panel glass">
+
+    <div id="auth-gate" class="auth-gate">
+      <h3>Sign in to use this tool</h3>
+      <p>Log in or create a free account to start using PixelForge tools.</p>
+      <div class="auth-gate-actions">
+        <a href="/login" class="btn btn-primary">Log in</a>
+        <a href="/signup" class="btn btn-ghost">Sign up free</a>
+      </div>
+    </div>
+
+    <div id="upload-stage" class="is-hidden upload-stage-inner">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon">↑</div>
+        <h3>Drop an image, or click to browse</h3>
+        <p>Then click any color on it to select it.</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" class="file-input-hidden">
+    </div>
+
+    <div id="edit-stage" class="is-hidden upload-stage-inner">
+      <div class="pick-frame" id="pick-frame">
+        <canvas id="pick-canvas"></canvas>
+        <canvas id="loupe-canvas" class="loupe" width="110" height="110"></canvas>
+      </div>
+
+      <div class="swatch-row">
+        <div>
+          <div class="swatch-label swatch-label-spaced">Selected</div>
+          <div class="swatch-box" id="picked-swatch"></div>
+        </div>
+        <div>
+          <div class="swatch-label swatch-label-spaced">Replacement</div>
+          <input type="color" id="new-color" class="color-input" value="#6d5ef7">
+        </div>
+        <div class="tolerance-row">
+          Tolerance
+          <input type="range" id="tolerance-slider" min="1" max="150" value="40">
+          <span id="tolerance-value">40</span>
+        </div>
+      </div>
+
+      <p id="pick-hint" class="pick-hint-text">Click a color on the image above to select it</p>
+
+      <div class="result-actions">
+        <a class="btn btn-primary" id="download-btn" download="recolored.png">Download PNG</a>
+        <button class="btn btn-ghost" id="start-over-btn">Start over</button>
+      </div>
+    </div>
+
+    <div id="error-banner" class="error-banner is-hidden"></div>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">Explore more</span>
+    <h2>Other tools</h2>
+  </div>
+  <div class="other-tools-grid">
+    <a href="/background-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/Background-remover.png" alt="Background-remover">
+      </div>
+      <h4>Background Remover</h4>
+      <p>Remove any background in one click</p>
+    </a>
+    <a href="/watermark-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/watermark-remover.png" alt="Watermark-remover">
+      </div>
+      <h4>Watermark Remover</h4>
+      <p>Watermarks gone, automatically</p>
+    </a>
+    <a href="/image-expander" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-expander.png" alt="Image-expander">
+      </div>
+      <h4>Image Expander</h4>
+      <p>Extend any photo's edges seamlessly</p>
+    </a>
+    <a href="/image-upscaler" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-upscaler.png" alt="Image-Upscaler">
+      </div>
+      <h4>Image Upscaler</h4>
+      <p>Sharper photos, up to 4x larger</p>
+    </a>
+    <a href="/svg-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/svg-converter.png" alt="SVG Converter">
+      </div>
+      <h4>SVG Converter</h4>
+      <p>Photo to scalable vector — free</p>
+    </a>
+    <a href="/vector-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/vectorizer.png" alt="Vectorizer">
+      </div>
+      <h4>Vectorizer</h4>
+      <p>AI vectorization — free</p>
+    </a>
+  </div>
+</div>
+
+<div class="container section section-first">
+  <div class="section-head">
+    <span class="section-eyebrow">How it works</span>
+    <h2>Recolor any object, instantly</h2>
+    <p class="sub">Pick a color on the image, choose its replacement, and every matching pixel updates — right in your browser.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <div class="feature-num">01</div>
+      <h3>Upload your photo</h3>
+      <p>Any PNG, JPG, or WebP — a product shot, a piece of clothing, a wall, anything with a distinct color area.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">02</div>
+      <h3>Click to sample a color</h3>
+      <p>Click anywhere on the image to pick up that color, then choose the replacement — adjust the tolerance slider to control how closely matching pixels need to be.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">03</div>
+      <h3>Download instantly</h3>
+      <p>The recolored image is generated entirely in your browser — no upload wait, no credits, completely free.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Use cases</span>
+    <h2>Who uses a recolor tool?</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <h3>Product photography</h3>
+      <p>Preview a product in a different color variant without reshooting — clothing, furniture, packaging, and more.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Interior &amp; design mockups</h3>
+      <p>Test a different wall color, fabric, or finish on a real photo before committing to a physical change.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Quick creative edits</h3>
+      <p>Swap a background color, a logo color, or any flat color area for a design variation.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">Is this really free?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — Recolor runs entirely in your browser, so there's no server processing cost and no credits required.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">What does the tolerance slider do?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>It controls how similar a pixel's color needs to be to your selected sample to get recolored. A higher tolerance catches more shading variation but risks affecting nearby unrelated colors.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Does it work on photos with gradients or shadows?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>It works best on relatively flat, consistent colors. Heavy gradients or shadows within the same object may need a higher tolerance, or may not fully match with a single click.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Is my image uploaded to a server?</button>
+      <div class="faq-answer"><p>No — Recolor processes the image entirely on your device using the canvas element. Nothing is sent anywhere.</p></div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/recolor.js"></script>
+</body>
+</html>

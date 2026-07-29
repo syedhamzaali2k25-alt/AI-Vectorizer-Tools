@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Background Remover - AI Vectorizer Tools</title>
+<meta name="description" content="Remove any background instantly with AI">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AI Background Remover",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is the background removed for free?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Background removal costs 1 credit per image. New accounts start with 3 free credits, so you can try it before upgrading." }
+    },
+    {
+      "@type": "Question",
+      "name": "What image formats are supported?",
+      "acceptedAnswer": { "@type": "Answer", "text": "PNG, JPG, and WebP are all supported, up to 15MB per image. The result is always delivered as a transparent PNG." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work well with hair and fine details?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Bria RMBG 2.0 is specifically tuned to handle fine edges like hair, fur, and semi-transparent areas better than older background-removal models." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I process many images at once?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Pro and Business plans include Bulk Processing, letting you upload up to 10 images at once and download every result as a single ZIP." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <span class="credits-remaining-badge is-hidden" id="credits-remaining-badge"></span>
+        <a href="/" class="btn btn-ghost">← All tools</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">✂️ Background Remover · <strong>1 credit</strong> per image</div>
+  <h1>Remove any background<br>in one click.</h1>
+  <a href="/bulk" class="btn bulk-promo-btn">
+    📦 Need to process multiple images? Try Bulk Processing →</a>
+</div>
+
+<div class="container tool-container">
+  <div class="tool-panel glass">
+
+    <div id="auth-gate" class="auth-gate">
+      <h3>Sign in to use this tool</h3>
+      <p>Log in or create a free account to start using AI Vectorizer Tools.</p>
+      <div class="auth-gate-actions">
+        <a href="/login" class="btn btn-primary">Log in</a>
+        <a href="/signup" class="btn btn-ghost">Sign up free</a>
+      </div>
+
+    </div>
+
+    <div id="upload-stage" class="is-hidden upload-stage-inner">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon">↑</div>
+        <h3>Drop an image, or click to browse</h3>
+        <p>PNG, JPG, or WebP · 15MB max</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" class="file-input-hidden">
+    </div>
+
+    <div id="processing-stage" class="is-hidden processing-panel">
+      <div class="spinner-ring"></div>
+      <h3>Removing the background…</h3>
+      <p>This usually takes a few seconds.</p>
+      <button class="btn btn-ghost cancel-btn" id="cancel-btn">✕ Cancel, pick a different image</button>
+    </div>
+
+    <div id="result-stage" class="is-hidden result-panel">
+      <div class="compare-frame" id="compare-frame">
+        <img id="compare-before" src="" alt="Original">
+        <img id="compare-after" src="" alt="Background removed">
+        <div class="compare-divider" id="compare-divider"></div>
+        <span class="compare-tag compare-tag-left">Before</span>
+        <span class="compare-tag compare-tag-right">After</span>
+      </div>
+      <div class="result-actions">
+        <a class="btn btn-primary" id="download-btn" download="background-removed.png">Download PNG</a>
+        <button class="btn btn-ghost" id="start-over-btn">Remove another</button>
+        <span class="credits-label-text" id="credits-label"></span>
+      </div>
+    </div>
+
+    <div id="error-banner" class="error-banner is-hidden"></div>
+  </div>
+</div>
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">Explore more</span>
+    <h2>Other tools</h2>
+  </div>
+  <div class="other-tools-grid">
+    <a href="/image-upscaler" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-upscaler.png" alt="image-upscaler" >
+      </div>
+      <h4>Image Upscaler</h4>
+      <p>Sharper photos, up to 4x larger</p>
+    </a>
+    <a href="/watermark-remover" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/watermark-remover.png" alt="watermark-remove" >
+      </div>
+      <h4>Watermark Remover</h4>
+      <p>Watermarks gone, automatically</p>
+    </a>
+    <a href="/image-expand" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-expander.png" alt="image-expander" >
+      </div>
+      <h4>Image Expander</h4>
+      <p>Extend any photo's edges seamlessly</p>
+    </a>
+    <a href="/image-recolor" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/image-recolor.png" alt="image-recolor" >
+      </div>
+      <h4>Image Recolor</h4>
+      <p>Recolor any object instantly — free</p>
+    </a>
+    <a href="/svg-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/svg-converter.png" alt="svg-converter" >
+      </div>
+      <h4>SVG Converter</h4>
+      <p>Photo to scalable vector — free</p>
+    </a>
+    <a href="/vector-converter" class="other-tool-card glass">
+      <div class="other-tool-icon">
+        <img src="/assets/images/vectorizer.png" alt="vectorize" >
+      </div>
+      <h4>Vectorizer</h4>
+      <p>AI vectorization — free</p>
+    </a>
+  </div>
+
+
+
+
+
+
+<div class="container section section-first">
+  <div class="section-head">
+    <span class="section-eyebrow">How it works</span>
+    <h2>AI background removal, explained</h2>
+    <p class="sub">No manual selection, no fiddly brush tools — just upload and let the model do the work.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <div class="feature-num">01</div>
+      <h3>Upload your photo</h3>
+      <p>Drop in any PNG, JPG, or WebP — portraits, products, pets, anything with a clear subject.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">02</div>
+      <h3>AI detects the subject</h3>
+      <p>Bria RMBG 2.0 identifies the main subject and separates it from the background automatically, including tricky edges like hair and fur.</p>
+    </div>
+    <div class="feature-card glass">
+      <div class="feature-num">03</div>
+      <h3>Download instantly</h3>
+      <p>Get back a transparent PNG in seconds — ready to drop into a new background, a product listing, or a design.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Use cases</span>
+    <h2>Who uses a background remover?</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass">
+      <h3>E-commerce sellers</h3>
+      <p>Clean, white-background product photos for Amazon, Etsy, or Shopify listings — no photo studio required.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Profile &amp; ID photos</h3>
+      <p>Swap a cluttered background for a plain one on headshots, LinkedIn photos, or passport-style pictures.</p>
+    </div>
+    <div class="feature-card glass">
+      <h3>Designers &amp; marketers</h3>
+      <p>Cut out a subject to place on a new background, in a collage, or over branded graphics — no Photoshop needed.</p>
+    </div>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">Is the background removed for free?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Background removal costs 1 credit per image. New accounts start with 3 free credits, so you can try it before upgrading.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">What image formats are supported?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>PNG, JPG, and WebP are all supported, up to 15MB per image. The result is always delivered as a transparent PNG.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Does it work well with hair and fine details?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — Bria RMBG 2.0 is specifically tuned to handle fine edges like hair, fur, and semi-transparent areas better than older background-removal models.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Can I process many images at once?</button>
+      <div class="faq-answer"><p>Yes — Pro and Business plans include Bulk Processing, letting you upload up to 10 images at once and download every result as a single ZIP. <a href="/bulk">Try Bulk Processing →</a></p></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/job-poller.js"></script>
+<script src="/assets/js/credits-badge.js"></script>
+<script src="/assets/js/bg-remove.js"></script>
+</body>
+</html>

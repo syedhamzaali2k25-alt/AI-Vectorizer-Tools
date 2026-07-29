@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — AI Vectorizer Tools</title>
+<meta name="description" content="Simple, transparent pricing for AI-powered image editing. Start free, upgrade when you need more.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "API Documentation",
+  "url": "https://aivectorizertools.com/api-docs"
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-ghost">← Home</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">💳 Pricing</div>
+  <h1>Simple plans<br>that scale with you.</h1>
+  <p>Start free. Upgrade only when you need more.</p>
+</div>
+
+<div class="container section section-first">
+  <div class="pricing-grid">
+    <div class="price-card glass">
+      <div class="price-name">Free</div>
+      <div class="price-amount">$0<span>/month</span></div>
+      <div class="price-desc">For trying every tool out</div>
+      <ul class="price-features">
+        <li>3 free conversions per month</li>
+        <li>All 7 tools included</li>
+        <li>Standard processing speed</li>
+        <li>720p export resolution</li>
+      </ul>
+      <a href="/signup" class="btn btn-ghost" id="plan-free-btn">Get started</a>
+    </div>
+    <div class="price-card featured glass">
+      <div class="price-name">Pro</div>
+      <div class="price-amount">$19<span>/month</span></div>
+      <div class="price-desc">For regular creators</div>
+      <ul class="price-features">
+        <li>500 credits per month</li>
+        <li>All 7 tools included</li>
+        <li>Priority processing speed</li>
+        <li>Full resolution export</li>
+        <li>Batch processing</li>
+        <li>Project history</li>
+      </ul>
+      <button class="btn btn-primary" id="plan-pro-btn" data-plan="pro">Start free trial</button>
+    </div>
+    <div class="price-card glass">
+      <div class="price-name">Business</div>
+      <div class="price-amount">$79<span>/month</span></div>
+      <div class="price-desc">For teams and high volume</div>
+      <ul class="price-features">
+        <li>3,000 credits per month</li>
+        <li>All 7 tools + API access</li>
+        <li>Fastest processing speed</li>
+        <li>Full resolution export</li>
+        <li>Team seats</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="btn btn-ghost" id="plan-business-btn" data-plan="business">Contact sales</button>
+    </div>
+  </div>
+  <div id="pricing-error-banner" class="error-banner is-hidden"></div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Compare</span>
+    <h2>Every feature, side by side</h2>
+  </div>
+  <div class="compare-table-wrap glass">
+    <table class="compare-table">
+      <tr><th>Feature</th><th>Free</th><th>Pro</th><th>Business</th></tr>
+      <tr><td>Monthly credits</td><td>3</td><td>500</td><td>3,000</td></tr>
+      <tr><td>All 7 tools</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+      <tr><td>Processing speed</td><td>Standard</td><td>Priority</td><td>Fastest</td></tr>
+      <tr><td>Export resolution</td><td>720p</td><td>Full</td><td>Full</td></tr>
+      <tr><td>Batch processing</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+      <tr><td>Bulk upload (10 images)</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+      <tr><td>Project history</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+      <tr><td>API access</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+      <tr><td>Team seats</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+      <tr><td>Priority support</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Pricing questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">What counts as a credit?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Each tool run (one image, one edit) uses a set number of credits, always shown on the tool page before you run it. Background Remover and Upscaler cost 1 credit; Watermark Remover and Image Expander cost 2 credits, since those involve more AI compute per image.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Can I cancel anytime?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — cancel from your billing settings at any time. You'll keep access through the end of your current billing period.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Do unused credits roll over?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Credits reset each billing cycle and don't carry over, so your plan's monthly amount is what's available each month.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Is there an API?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes, available on the Business plan — call any tool directly from your own app with a REST API and per-call billing. See our <a href="/api-docs">API documentation</a> for details.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">What happens if I run out of credits?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Tools that require credits will show a clear message if your balance is too low to run — nothing gets charged, and no partial results are generated. You can upgrade your plan at any time to get more credits immediately.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Can I switch plans later?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — you can upgrade or downgrade at any time from your dashboard. Changing plans updates your credit allowance right away.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Do you offer refunds?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Subscriptions can be cancelled anytime, and you'll retain access through the end of the period you already paid for. We don't provide partial refunds for unused time within a billing cycle.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Is bulk processing included automatically with Pro and Business?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — bulk processing (up to 10 images per batch) is included with both Pro and Business plans at no extra cost, billed at the same per-image credit rate as the individual tools.</p></div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/pricing-checkout.js"></script>
+</body>
+</html>

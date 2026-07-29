@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bulk Processing — AI Vectorizer Tools</title>
+<meta name="description" content="Process multiple images at once — Pro and Business plans.">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="apple-touch-icon" sizes="48x48" href="/assets/images/ai-vectorizer-tools-5.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Bulk Processing",
+  "url": "https://aivectorizertools.com/bulk"
+}
+</script>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-logo" href="/">
+        <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+      </a>
+      <div class="nav-links">
+        <a href="/#tools">Tools</a>
+        <a href="/#features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-ghost">← All tools</a>
+      </div>
+      <button class="nav-menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+    </nav>
+  </div>
+</div>
+
+<div class="container tool-header">
+  <div class="credit-badge glass">📦 Bulk Processing · Pro &amp; Business plans</div>
+  <h1>Process many.<br>Download once.</h1>
+  <p>Upload up to 10 images, pick a tool, and download every result as a single ZIP.</p>
+</div>
+
+<div class="container tool-container">
+  <div class="tool-panel glass tool-panel-wide">
+
+    <div id="auth-gate" class="auth-gate">
+      <h3>Sign in to use this tool</h3>
+      <p>Log in or create an account to start using PixelForge tools.</p>
+      <div class="auth-gate-actions">
+        <a href="/login" class="btn btn-primary">Log in</a>
+        <a href="/signup" class="btn btn-ghost">Sign up free</a>
+      </div>
+    </div>
+
+    <div id="upgrade-gate" class="auth-gate is-hidden">
+      <h3>Bulk processing is a Pro/Business feature</h3>
+      <p>Upgrade your plan to process multiple images at once and download them together as a ZIP.</p>
+      <div class="auth-gate-actions">
+        <a href="/pricing" class="btn btn-primary">See plans</a>
+      </div>
+    </div>
+
+    <div id="upload-stage" class="is-hidden upload-stage-inner">
+      <div class="tool-select-row">
+        <label class="tool-select-label">Tool:</label>
+        <select id="tool-select" class="tool-select-dropdown">
+          <option value="background-remover">Background Remover · 1 credit each</option>
+          <option value="image-upscaler">Image Upscaler · 1 credit each</option>
+          <option value="watermark-remover">Watermark Remover · 2 credits each</option>
+        </select>
+      </div>
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon">↑</div>
+        <h3>Drop up to 10 images, or click to browse</h3>
+        <p>PNG, JPG, or WebP · 15MB max per image</p>
+      </div>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" multiple class="file-input-hidden">
+    </div>
+
+    <div id="review-stage" class="is-hidden upload-stage-inner">
+      <p class="review-hint-text">
+        Review your images below — remove any you don't want with the ✕, or add more before starting.
+      </p>
+      <div class="batch-grid" id="review-grid"></div>
+      <div class="result-actions result-actions-padded">
+        <button class="btn btn-primary" id="start-processing-btn">Start</button>
+        <button class="btn btn-ghost" id="add-more-btn">+ Add more images</button>
+        <span class="credits-label-text" id="review-count-label"></span>
+      </div>
+    </div>
+
+    <div id="batch-stage" class="is-hidden upload-stage-inner">
+      <div class="batch-grid" id="batch-grid"></div>
+      <div class="result-actions result-actions-padded">
+        <button class="btn btn-primary" id="download-zip-btn" disabled>Download all as ZIP</button>
+        <button class="btn btn-ghost" id="start-over-btn">Start over</button>
+        <span class="credits-label-text" id="batch-status-label"></span>
+      </div>
+    </div>
+
+    <div id="error-banner" class="error-banner is-hidden"></div>
+  </div>
+</div>
+
+<div class="container section section-first">
+  <div class="section-head">
+    <span class="section-eyebrow">How it works</span>
+    <h2>Bulk processing, explained</h2>
+  </div>
+  <div class="content-block">
+    <p>Processing images one at a time works fine when you only have one or two to edit. But if you're clearing backgrounds from an entire product catalog, upscaling a full photoshoot, or cleaning watermarks off a batch of licensed stock photos, uploading each image individually and waiting for it to finish before starting the next one adds up to a lot of wasted time. Bulk Processing is built specifically for that situation.</p>
+    <p>Start by choosing which tool you want to run — Background Remover, Image Upscaler, or Watermark Remover — from the dropdown at the top of this page. Each tool costs the same per image here as it does on its own dedicated page, so there's no extra charge for using the batch flow itself.</p>
+    <p>Once you've picked a tool, drop in up to 10 images at once, either by dragging them onto the upload area or clicking to browse your files. Every image can be up to 15MB, the same limit as the individual tool pages.</p>
+    <p>Before anything actually processes, you'll land on a review screen showing thumbnails of every image you selected. This is your chance to double check the batch — remove any image you added by mistake with the ✕ button, or click "Add more images" to bring in additional files without losing what you've already selected. Nothing is sent to our servers or charged against your credits until you actually click "Start."</p>
+    <p>Once you start, each image processes in sequence, and you'll see a live status badge on every thumbnail update in real time — processing, completed, or failed. If one image in the batch fails for any reason, the rest continue normally; a single failure never stops the batch or affects your other images, and you're never charged credits for the one that failed.</p>
+    <p>When everything finishes, a "Download all as ZIP" button becomes available. Click it once, and every successfully processed image is bundled into a single ZIP file — no need to click through and download each result one at a time.</p>
+  </div>
+</div>
+
+<div class="container section section-tight">
+  <div class="section-head">
+    <span class="section-eyebrow">Use cases</span>
+    <h2>Who uses bulk processing?</h2>
+  </div>
+  <div class="content-block">
+    <p><strong>E-commerce sellers and catalog managers</strong> often have dozens or hundreds of product photos that all need the same background removed before they can go live on a marketplace listing. Instead of uploading each photo separately and waiting for it to finish, a whole batch can be queued up and left to process while you work on something else, then downloaded as one ZIP ready to import back into your store.</p>
+    <p><strong>Photographers and creative agencies</strong> frequently need to upscale an entire shoot's worth of images at once — for print delivery, a client handoff, or preparing assets for a larger display. Running that shoot through Bulk Processing means the whole set comes back at higher resolution together, rather than one photo at a time.</p>
+    <p><strong>Content, marketing, and social media teams</strong> working with licensed stock photography sometimes need to clear preview watermarks from a whole batch of images before dropping them into campaigns, decks, or a content calendar. Bulk Processing handles that cleanup across the entire set in one pass instead of requiring a separate visit to the Watermark Remover tool for every single image.</p>
+  </div>
+</div>
+
+<div class="container section section-tight-bottom">
+  <div class="section-head">
+    <span class="section-eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item glass">
+      <button class="faq-question">How many images can I process at once?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Up to 10 images per batch, each up to 15MB. Need more? Just start a new batch once the first one finishes.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Which tools support bulk processing?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Background Remover, Image Upscaler, and Watermark Remover. Image Expander isn't included, since each expansion needs its own custom direction and amount, which doesn't fit a simple batch flow.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">Are credits charged per image?<span class="faq-icon">+</span></button>
+      <div class="faq-answer"><p>Yes — the same per-image cost as using the tool individually (1 credit for Background Remover and Upscaler, 2 for Watermark Remover), charged only for images that actually complete successfully.</p></div>
+    </div>
+    <div class="faq-item glass">
+      <button class="faq-question">What happens if one image in a batch fails?</button>
+      <div class="faq-answer"><p>The rest of the batch keeps processing normally — a single failure doesn't stop or affect the other images, and you're never charged credits for one that fails.</p></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="/">
+          <img class="nav-logo-mark" src="/assets/images/ai-vectorizer-tools-1.png" alt="AI Vectorizer Tools logo">
+        </a>
+        <p>AI-powered image editing tools for creators, designers, and teams.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="/background-remover">Background Remover</a>
+        <a href="/image-upscaler">Image Upscaler</a>
+        <a href="/watermark-remover">Watermark Remover</a>
+        <a href="/svg-converter">SVG Converter</a>
+        <a href="/vector-converter">Vector Converter</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/api-docs">API Docs</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AI Vectorizer Tools</span>
+      <span>Made for creators, everywhere</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/bulk.js"></script>
+</body>
+</html>
