@@ -13,7 +13,7 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://aivectorizertools.com/upscale</loc>
+    <loc>https://aivectorizertools.com/image-upscaler</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -23,12 +23,12 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://aivectorizertools.com/expand</loc>
+    <loc>https://aivectorizertools.com/image-expander</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://aivectorizertools.com/recolor</loc>
+    <loc>https://aivectorizertools.com/image-recolor</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -38,7 +38,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://aivectorizertools.com/vectorize</loc>
+    <loc>https://aivectorizertools.com/vector-converter</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
