@@ -28,21 +28,6 @@ const billingWebhookRoutes = require('./routes/billingWebhook');
 const billingRoutes = require('./routes/billing');
 
 const app = express();
-const fs = require("fs");
-
-
-
-console.log("__dirname =", __dirname);
-console.log("cwd =", process.cwd());
-
-
-const clientDir = path.join(__dirname, "..", "client");
-const pagesDir = path.join(clientDir, "pages");
-const indexFile = path.join(pagesDir, "index.html");
-
-console.log("client exists:", fs.existsSync(clientDir));
-console.log("pages exists:", fs.existsSync(pagesDir));
-console.log("index exists:", fs.existsSync(indexFile));
 
 // Hostinger (like most hosting platforms) sits the app behind a reverse
 // proxy, which adds an X-Forwarded-For header showing the real visitor
@@ -94,7 +79,7 @@ const cleanUrlMap = {
   '/bulk': 'bulk.html',
   '/pricing': 'pricing.html',
   '/api-docs': 'api-docs.html',
-  '/blog': 'blog.html',
+  '/blog': 'blogs.html',
   '/blog/how-to-expand-any-image-beyond-its-original-frame': 'blog-expand-image.html',
   '/blog/how-ai-background-removers-are-changing-the-way-designers-work': 'blog-bg-remove-designers.html',
   '/blog/how-to-upscale-images-using-ai': 'blog-upscale-images.html',
@@ -111,12 +96,8 @@ const cleanUrlMap = {
 for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
   app.get(cleanPath, (req, res) => {
     const filePath = path.join(__dirname, '..', 'client', 'pages', realFile);
-
-    console.log("Trying to serve:", filePath);
-
     res.sendFile(filePath, (err) => {
       if (err) {
-        console.error(err); // <-- Ye line add karo
         console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`);
       }
     });
@@ -149,8 +130,6 @@ app.use(errorHandler);
 // Single startup block — a second, duplicate app.listen() here previously
 // would have tried to bind the same port twice and crashed with
 // EADDRINUSE the moment the server started.
-
-
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`PixelForge API listening on port ${PORT}`);
