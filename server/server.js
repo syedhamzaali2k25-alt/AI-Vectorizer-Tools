@@ -145,6 +145,16 @@ app.use(errorHandler);
 // Single startup block — a second, duplicate app.listen() here previously
 // would have tried to bind the same port twice and crashed with
 // EADDRINUSE the moment the server started.
+const fs = require("fs");
+
+console.log("__dirname:", __dirname);
+console.log("cwd:", process.cwd());
+
+const testFile = path.resolve(__dirname, "..", "client", "pages", "index.html");
+
+console.log("Resolved path:", testFile);
+console.log("Exists:", fs.existsSync(testFile));
+
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`PixelForge API listening on port ${PORT}`);
