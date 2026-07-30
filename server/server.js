@@ -30,7 +30,11 @@ const billingRoutes = require('./routes/billing');
 const app = express();
 const fs = require("fs");
 
+
+
 console.log("__dirname =", __dirname);
+console.log("cwd =", process.cwd());
+
 
 const clientDir = path.join(__dirname, "..", "client");
 const pagesDir = path.join(clientDir, "pages");
@@ -90,7 +94,7 @@ const cleanUrlMap = {
   '/bulk': 'bulk.html',
   '/pricing': 'pricing.html',
   '/api-docs': 'api-docs.html',
-  '/blog': 'blogs.html',
+  '/blog': 'blog.html',
   '/blog/how-to-expand-any-image-beyond-its-original-frame': 'blog-expand-image.html',
   '/blog/how-ai-background-removers-are-changing-the-way-designers-work': 'blog-bg-remove-designers.html',
   '/blog/how-to-upscale-images-using-ai': 'blog-upscale-images.html',
@@ -145,15 +149,7 @@ app.use(errorHandler);
 // Single startup block — a second, duplicate app.listen() here previously
 // would have tried to bind the same port twice and crashed with
 // EADDRINUSE the moment the server started.
-const fs = require("fs");
 
-console.log("__dirname:", __dirname);
-console.log("cwd:", process.cwd());
-
-const testFile = path.resolve(__dirname, "..", "client", "pages", "index.html");
-
-console.log("Resolved path:", testFile);
-console.log("Exists:", fs.existsSync(testFile));
 
 if (require.main === module) {
   app.listen(PORT, () => {
