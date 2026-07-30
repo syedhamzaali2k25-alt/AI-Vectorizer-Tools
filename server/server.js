@@ -1,5 +1,7 @@
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config({ quiet: true, path: path.join(__dirname, '..', '.env') });
+
 
 const { startJobTimeoutSweep } = require('./services/jobTimeoutSweep');
 const express = require('express');
@@ -88,18 +90,20 @@ const cleanUrlMap = {
 
 for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
   app.get(cleanPath, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'client', 'pages', realFile);
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`);
-        // sendFile's callback fires on failure even after headers may
-        // have been partially sent; only respond if we still can, so we
-        // never leave the client hanging with no response at all.
-        if (!res.headersSent) {
-          res.status(404).send('Not found');
-        }
-      }
-    });
+    const filePath = path.resolve(__dirname, '..', 'client', 'pages', realFile);
+    // Using fs.readFileSync + res.send instead of res.sendFile: on this
+    // host the app runs from a symlinked/versioned build directory
+    // (.builds/versions/<uuid>/...), and res.sendFile's internal path
+    // resolution (via the `send` package) fails to serve files there.
+    // Reading the file directly and sending it as a string sidesteps
+    // that resolution logic entirely.
+    try {
+      const html = fs.readFileSync(filePath, 'utf8');
+      res.type('html').send(html);
+    } catch (err) {
+      console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`, err.message);
+      res.status(404).send('Not found');
+    }
   });
 }
 
