@@ -96,8 +96,12 @@ const cleanUrlMap = {
 for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
   app.get(cleanPath, (req, res) => {
     const filePath = path.join(__dirname, '..', 'client', 'pages', realFile);
+
+    console.log("Trying to serve:", filePath);
+
     res.sendFile(filePath, (err) => {
       if (err) {
+        console.error(err); // <-- Ye line add karo
         console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`);
       }
     });
