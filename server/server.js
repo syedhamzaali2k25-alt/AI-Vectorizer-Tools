@@ -1,16 +1,6 @@
 const path = require('path');
 require('dotenv').config({ quiet: true, path: path.join(__dirname, '..', '.env') });
 
-// Temporary diagnostic — safely logs the DATABASE_URL's host/user/port
-// without exposing the password, to confirm the server is actually
-// reading the value you expect it to. Remove this once the connection
-// is confirmed working.
-if (process.env.DATABASE_URL) {
-  const masked = process.env.DATABASE_URL.replace(/:([^:@]+)@/, ':***@');
-  console.log('[startup diagnostic] DATABASE_URL seen by Node:', masked);
-} else {
-  console.log('[startup diagnostic] DATABASE_URL is NOT SET at all — process.env.DATABASE_URL is undefined/empty.');
-}
 const { startJobTimeoutSweep } = require('./services/jobTimeoutSweep');
 const express = require('express');
 const cors = require('cors');
@@ -61,7 +51,10 @@ app.use(helmet({
 app.use(cors({
   origin: process.env.PUBLIC_BASE_URL || 'http://localhost:4000'
 }));
-app.use(express.json());
+
+// Cap request body size — without a limit, express.json() will accept
+// arbitrarily large payloads on every route.
+app.use(express.json({ limit: '1mb' }));
 
 // Serve the static frontend (client/) so the whole app can run from one server locally
 // Clean URL routes — map pretty paths (e.g. /background-remover) to the
@@ -99,6 +92,12 @@ for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
     res.sendFile(filePath, (err) => {
       if (err) {
         console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`);
+        // sendFile's callback fires on failure even after headers may
+        // have been partially sent; only respond if we still can, so we
+        // never leave the client hanging with no response at all.
+        if (!res.headersSent) {
+          res.status(404).send('Not found');
+        }
       }
     });
   });
