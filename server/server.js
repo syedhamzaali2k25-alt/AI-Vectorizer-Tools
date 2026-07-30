@@ -1,7 +1,6 @@
-
 const path = require('path');
 require('dotenv').config({ quiet: true, path: path.join(__dirname, '..', '.env') });
- 
+
 // Temporary diagnostic — safely logs the DATABASE_URL's host/user/port
 // without exposing the password, to confirm the server is actually
 // reading the value you expect it to. Remove this once the connection
@@ -17,7 +16,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
- 
+
 const authRoutes = require('./routes/auth');
 const toolsRoutes = require('./routes/tools');
 const dashboardRoutes = require('./routes/dashboard');
@@ -27,16 +26,16 @@ const bulkRoutes = require('./routes/bulk');
 const apiKeyRoutes = require('./routes/apiKey');
 const billingWebhookRoutes = require('./routes/billingWebhook');
 const billingRoutes = require('./routes/billing');
- 
+
 const app = express();
- 
+
 // Hostinger (like most hosting platforms) sits the app behind a reverse
 // proxy, which adds an X-Forwarded-For header showing the real visitor
 // IP. Without this setting, express-rate-limit can't reliably tell
 // visitors apart by IP, and Express logs a warning about it.
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 4000;
- 
+
 // CRITICAL: the billing webhook route must be mounted here, BEFORE
 // express.json() below — signature verification needs the exact raw
 // bytes Lemon Squeezy signed. If express.json() runs first, it consumes
@@ -45,7 +44,7 @@ const PORT = process.env.PORT || 4000;
 // (confirmed directly in testing: req.body would already be a parsed
 // object, not a Buffer, breaking the signature check entirely).
 app.use('/api/billing', billingWebhookRoutes);
- 
+
 // Default helmet CSP only allows images from 'self' and data: — this was
 // silently blocking every tool result: local before/after previews use
 // blob: URLs, and Replicate's actual output images are served from
@@ -71,16 +70,16 @@ app.use(express.json());
 const cleanUrlMap = {
   '/': 'index.html',
   '/background-remover': 'bg-remove.html',
-  '/image-upscaler': 'upscale.html',
+  '/upscale': 'upscale.html',
   '/watermark-remover': 'watermark-remove.html',
-  '/image-expander': 'expand.html',
-  '/image-recolor': 'recolor.html',
+  '/expand': 'expand.html',
+  '/recolor': 'recolor.html',
   '/svg-converter': 'svg-converter.html',
-  '/vector-converter': 'vectorize.html',
+  '/vectorize': 'vectorize.html',
   '/bulk': 'bulk.html',
   '/pricing': 'pricing.html',
   '/api-docs': 'api-docs.html',
-  '/blog': 'blog.html',
+  '/blog': 'blogs.html',
   '/blog/how-to-expand-any-image-beyond-its-original-frame': 'blog-expand-image.html',
   '/blog/how-ai-background-removers-are-changing-the-way-designers-work': 'blog-bg-remove-designers.html',
   '/blog/how-to-upscale-images-using-ai': 'blog-upscale-images.html',
@@ -96,7 +95,12 @@ const cleanUrlMap = {
 
 for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
   app.get(cleanPath, (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'pages', realFile));
+    const filePath = path.join(__dirname, '..', 'client', 'pages', realFile);
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`);
+      }
+    });
   });
 }
 
