@@ -74,7 +74,7 @@ const cleanUrlMap = {
   '/bulk': 'bulk.html',
   '/pricing': 'pricing.html',
   '/api-docs': 'api-docs.html',
-  '/blog': 'blogs.html',
+  '/blog': 'blog.html',
   '/blog/how-to-expand-any-image-beyond-its-original-frame': 'blog-expand-image.html',
   '/blog/how-ai-background-removers-are-changing-the-way-designers-work': 'blog-bg-remove-designers.html',
   '/blog/how-to-upscale-images-using-ai': 'blog-upscale-images.html',
