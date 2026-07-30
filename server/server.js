@@ -28,6 +28,17 @@ const billingWebhookRoutes = require('./routes/billingWebhook');
 const billingRoutes = require('./routes/billing');
 
 const app = express();
+const fs = require("fs");
+
+console.log("__dirname =", __dirname);
+
+const clientDir = path.join(__dirname, "..", "client");
+const pagesDir = path.join(clientDir, "pages");
+const indexFile = path.join(pagesDir, "index.html");
+
+console.log("client exists:", fs.existsSync(clientDir));
+console.log("pages exists:", fs.existsSync(pagesDir));
+console.log("index exists:", fs.existsSync(indexFile));
 
 // Hostinger (like most hosting platforms) sits the app behind a reverse
 // proxy, which adds an X-Forwarded-For header showing the real visitor
