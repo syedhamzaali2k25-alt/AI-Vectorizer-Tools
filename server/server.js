@@ -107,21 +107,12 @@ const cleanUrlMap = {
   '/signup': 'signup.html',
   '/oauth-complete': 'oauth-complete.html'
 };
+app.get("/", (req, res) => {
+    const filePath = path.join(__dirname, "..", "client", "pages", "index.html");
 
-for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
-  app.get(cleanPath, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'client', 'pages', realFile);
-
-    console.log("Trying to serve:", filePath);
-
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error(err); // <-- Ye line add karo
-        console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`);
-      }
-    });
-  });
-}
+    res.type("html");
+    res.send(fs.readFileSync(filePath, "utf8"));
+});
 
 app.use(express.static(path.join(__dirname, '..', 'client')));
 
