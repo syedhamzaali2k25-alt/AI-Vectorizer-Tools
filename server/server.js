@@ -1,16 +1,8 @@
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config({ quiet: true, path: path.join(__dirname, '..', '.env') });
 
-// Temporary diagnostic — safely logs the DATABASE_URL's host/user/port
-// without exposing the password, to confirm the server is actually
-// reading the value you expect it to. Remove this once the connection
-// is confirmed working.
-if (process.env.DATABASE_URL) {
-  const masked = process.env.DATABASE_URL.replace(/:([^:@]+)@/, ':***@');
-  console.log('[startup diagnostic] DATABASE_URL seen by Node:', masked);
-} else {
-  console.log('[startup diagnostic] DATABASE_URL is NOT SET at all — process.env.DATABASE_URL is undefined/empty.');
-}
+
 const { startJobTimeoutSweep } = require('./services/jobTimeoutSweep');
 const express = require('express');
 const cors = require('cors');
@@ -61,7 +53,10 @@ app.use(helmet({
 app.use(cors({
   origin: process.env.PUBLIC_BASE_URL || 'http://localhost:4000'
 }));
-app.use(express.json());
+
+// Cap request body size — without a limit, express.json() will accept
+// arbitrarily large payloads on every route.
+app.use(express.json({ limit: '1mb' }));
 
 // Serve the static frontend (client/) so the whole app can run from one server locally
 // Clean URL routes — map pretty paths (e.g. /background-remover) to the
@@ -79,7 +74,7 @@ const cleanUrlMap = {
   '/bulk': 'bulk.html',
   '/pricing': 'pricing.html',
   '/api-docs': 'api-docs.html',
-  '/blog': 'blogs.html',
+  '/blog': 'blog.html',
   '/blog/how-to-expand-any-image-beyond-its-original-frame': 'blog-expand-image.html',
   '/blog/how-ai-background-removers-are-changing-the-way-designers-work': 'blog-bg-remove-designers.html',
   '/blog/how-to-upscale-images-using-ai': 'blog-upscale-images.html',
@@ -95,12 +90,20 @@ const cleanUrlMap = {
 
 for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
   app.get(cleanPath, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'client', 'pages', realFile);
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`);
-      }
-    });
+    const filePath = path.resolve(__dirname, '..', 'client', 'pages', realFile);
+    // Using fs.readFileSync + res.send instead of res.sendFile: on this
+    // host the app runs from a symlinked/versioned build directory
+    // (.builds/versions/<uuid>/...), and res.sendFile's internal path
+    // resolution (via the `send` package) fails to serve files there.
+    // Reading the file directly and sending it as a string sidesteps
+    // that resolution logic entirely.
+    try {
+      const html = fs.readFileSync(filePath, 'utf8');
+      res.type('html').send(html);
+    } catch (err) {
+      console.error(`[clean-url diagnostic] Failed to serve "${req.path}" -> expected file: ${filePath}`, err.message);
+      res.status(404).send('Not found');
+    }
   });
 }
 
