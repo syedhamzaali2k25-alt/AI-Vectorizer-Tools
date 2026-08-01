@@ -48,8 +48,19 @@ const router = express.Router();
 router.get('/temp/:id', (req, res) => {
   const filePath = path.join(TEMP_DIR, req.params.id);
   if (!filePath.startsWith(TEMP_DIR)) return res.status(400).send('Invalid id');
-  if (!fs.existsSync(filePath)) return res.status(404).send('Not found or already used');
-  res.sendFile(filePath);
+
+  try {
+    const data = fs.readFileSync(filePath);
+    const ext = path.extname(filePath).toLowerCase();
+    const mime = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' }[ext] || 'application/octet-stream';
+    res.type(mime).send(data);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return res.status(404).send('Not found or already used');
+    }
+    console.error('[temp route] Failed to read staged file:', filePath, err.message);
+    return res.status(500).send('Could not read file');
+  }
 });
 
 /**
