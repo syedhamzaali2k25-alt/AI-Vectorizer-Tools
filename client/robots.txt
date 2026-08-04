@@ -3,5 +3,7 @@ Allow: /
 Disallow: /api/
 Disallow: /dashboard
 Disallow: /oauth-complete
+Disallow: /login
+Disallow: /signup
 
 Sitemap: https://aivectorizertools.com/sitemap.xml

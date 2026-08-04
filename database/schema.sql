@@ -17,9 +17,9 @@ CREATE TABLE IF NOT EXISTS plans (
 );
 
 INSERT INTO plans (name, monthly_credits, price_cents) VALUES
-  ('free', 3, 0),
+  ('free', 5, 0),
   ('pro', 500, 1900),
-  ('business', 3000, 7900)
+  ('business', 2000, 7900)
 ON CONFLICT (name) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS users (
