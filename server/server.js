@@ -79,6 +79,7 @@ const cleanUrlMap = {
   '/blog/how-ai-background-removers-are-changing-the-way-designers-work': 'blog-bg-remove-designers.html',
   '/blog/how-to-upscale-images-using-ai': 'blog-upscale-images.html',
   '/blog/how-to-convert-a-jpg-logo-to-vector-without-losing-quality': 'blog-jpg-to-vector.html',
+  '/blog/complete-guide': 'blog-complete-guide.html',
   '/contact': 'contact.html',
   '/privacy-policy': 'privacy-policy.html',
   '/terms-of-service': 'terms-of-service.html',

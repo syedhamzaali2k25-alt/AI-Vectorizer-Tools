@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>API Documentation — AI Vectorizer Tools</title>
+<title>API Documentation | AI Vectorizer Tools</title>
 <meta name="description" content="Call any AI Vectorizer Tools tool directly from your own code using a Business plan API key.">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/ai-vectorizer-tools-5.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/ai-vectorizer-tools-5.png">
@@ -43,7 +43,7 @@
 <div class="container tool-header">
   <div class="credit-badge glass">🔑 Business plan feature</div>
   <h1>API Documentation</h1>
-  <p>Call any tool directly from your own code or app — no browser, no manual uploads. Available on the Business plan.</p>
+  <p>Call any tool directly from your own code or app no browser, no manual uploads. Available on the Business plan.</p>
 </div>
 
 <div class="container api-container">
@@ -63,7 +63,7 @@
   <div id="getting-key" class="api-section">
     <h2 class="api-section-title">Getting your API key</h2>
     <p class="api-text">
-      Generate a key from your <a href="/dashboard" class="api-link">dashboard</a> — Business plan only.
+      Generate a key from your <a href="/dashboard" class="api-link">dashboard</a>Business plan only.
       The full key is shown once, right when you generate it; after that, only a masked preview is shown. Keys expire
       after 30 days and can be regenerated anytime.
     </p>
@@ -79,7 +79,7 @@
   <span class="key">-F</span> <span class="string">"image=@photo.png"</span></div>
     <p class="api-note">
       A missing or invalid key returns a <code class="inline-code">401</code> response.
-      An expired key is treated the same as an invalid one — generate a new one from your dashboard.
+      An expired key is treated the same as an invalid one generate a new one from your dashboard.
     </p>
   </div>
 
@@ -93,7 +93,7 @@
     <h4>Request (multipart/form-data)</h4>
     <table class="api-table">
       <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
-      <tr><td>image</td><td>file</td><td>Yes</td><td>PNG, JPG, or WebP — max 15MB</td></tr>
+      <tr><td>image</td><td>file</td><td>Yes</td><td>PNG, JPG, or WebP max 15MB</td></tr>
     </table>
 
     <h4>Response</h4>
@@ -102,7 +102,7 @@
   <span class="key">"jobId"</span>: 1234
 }</div>
     <p class="api-note">
-      Processing happens asynchronously — use the jobId with <a href="#jobs" class="api-link">GET /api/jobs/:id</a> to check status and get the result.
+      Processing happens asynchronously use the jobId with <a href="#jobs" class="api-link">GET /api/jobs/:id</a> to check status and get the result.
     </p>
   </div>
 
@@ -114,8 +114,8 @@
     <h4>Request (multipart/form-data)</h4>
     <table class="api-table">
       <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
-      <tr><td>image</td><td>file</td><td>Yes</td><td>PNG, JPG, or WebP — max 15MB</td></tr>
-      <tr><td>scale</td><td>number</td><td>No</td><td>2 or 4 — defaults to 4</td></tr>
+      <tr><td>image</td><td>file</td><td>Yes</td><td>PNG, JPG, or WebP max 15MB</td></tr>
+      <tr><td>scale</td><td>number</td><td>No</td><td>2 or 4 defaults to 4</td></tr>
     </table>
 
     <h4>Response</h4>
@@ -128,12 +128,12 @@
   <div class="api-endpoint-card glass" id="watermark-remove">
     <span class="api-method-badge api-method-post">POST</span>
     <h3>/api/tools/watermark-remove</h3>
-    <p class="desc">Automatically detects and removes a watermark — no manual masking needed. Costs 2 credits.</p>
+    <p class="desc">Automatically detects and removes a watermark no manual masking needed. Costs 2 credits.</p>
 
     <h4>Request (multipart/form-data)</h4>
     <table class="api-table">
       <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
-      <tr><td>image</td><td>file</td><td>Yes</td><td>PNG, JPG, or WebP — max 15MB</td></tr>
+      <tr><td>image</td><td>file</td><td>Yes</td><td>PNG, JPG, or WebP max 15MB</td></tr>
     </table>
 
     <h4>Response</h4>
@@ -157,8 +157,8 @@
     <table class="api-table">
       <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
       <tr><td>image</td><td>file</td><td>Yes</td><td>Your image, pre-padded with blank space on the sides you want to extend</td></tr>
-      <tr><td>mask</td><td>file</td><td>Yes</td><td>White = area to generate, black = keep original — same dimensions as image</td></tr>
-      <tr><td>prompt</td><td>string</td><td>No</td><td>Custom guidance for the AI — a sensible default is used if omitted</td></tr>
+      <tr><td>mask</td><td>file</td><td>Yes</td><td>White = area to generate, black = keep original same dimensions as image</td></tr>
+      <tr><td>prompt</td><td>string</td><td>No</td><td>Custom guidance for the AI a sensible default is used if omitted</td></tr>
     </table>
 
     <h4>Response</h4>
@@ -167,7 +167,7 @@
   <span class="key">"jobId"</span>: 1237
 }</div>
     <p class="api-note">
-      Building the padded image and mask requires some image manipulation on your end before calling this endpoint —
+      Building the padded image and mask requires some image manipulation on your end before calling this endpoint 
       see how the <a href="/image-expand" class="api-link">Image Expander tool</a> itself constructs them if you need a reference.
     </p>
   </div>
@@ -178,26 +178,26 @@
     <p class="desc">Checks the status of a job created by any of the endpoints above. Poll this every 2-3 seconds until the status is no longer "processing".</p>
 
     <h4>Rate limit</h4>
-    <p class="api-note">Max 10 requests per 5 seconds per key — comfortably covers polling every 2-3 seconds from several tabs at once, while still catching a runaway loop. Exceeding it returns a 429.</p>
+    <p class="api-note">Max 10 requests per 5 seconds per key comfortably covers polling every 2-3 seconds from several tabs at once, while still catching a runaway loop. Exceeding it returns a 429.</p>
 
-    <h4>Response — while processing</h4>
+    <h4>Response while processing</h4>
     <div class="code-block">{ <span class="key">"success"</span>: true, <span class="key">"status"</span>: <span class="string">"processing"</span> }</div>
 
-    <h4>Response — completed</h4>
+    <h4>Response completed</h4>
     <div class="code-block">{
   <span class="key">"success"</span>: true,
   <span class="key">"status"</span>: <span class="string">"completed"</span>,
   <span class="key">"outputUrl"</span>: <span class="string">"https://replicate.delivery/..."</span>
 }</div>
 
-    <h4>Response — failed</h4>
+    <h4>Response failed</h4>
     <div class="code-block">{
   <span class="key">"success"</span>: true,
   <span class="key">"status"</span>: <span class="string">"failed"</span>,
   <span class="key">"error"</span>: <span class="string">"..."</span>
 }</div>
     <p class="api-note">
-      Credits are only ever deducted on a successful completion — a failed job never costs anything.
+      Credits are only ever deducted on a successful completion a failed job never costs anything.
     </p>
   </div>
 
@@ -223,7 +223,7 @@
 }</div>
     <p class="api-note">
       Check each job individually with <code class="inline-code">GET /api/jobs-batch?ids=1,2</code>
-      — a single request covering multiple jobs, rather than polling each one separately.
+      a single request covering multiple jobs, rather than polling each one separately.
     </p>
   </div>
 
@@ -235,9 +235,9 @@
       <tr><td>401</td><td>Missing, invalid, or expired API key</td></tr>
       <tr><td>402</td><td>Not enough credits for this request</td></tr>
       <tr><td>403</td><td>Your plan doesn't include this feature (e.g. bulk upload on Free)</td></tr>
-      <tr><td>413</td><td>File too large — 15MB max per image</td></tr>
-      <tr><td>429</td><td>Too many requests to the job status endpoint — max 10 per 5 seconds per key</td></tr>
-      <tr><td>500</td><td>Something went wrong on our end — safe to retry</td></tr>
+      <tr><td>413</td><td>File too large 15MB max per image</td></tr>
+      <tr><td>429</td><td>Too many requests to the job status endpoint max 10 per 5 seconds per key</td></tr>
+      <tr><td>500</td><td>Something went wrong on our end safe to retry</td></tr>
     </table>
     <p class="api-note">
       Every error response has the shape <code class="inline-code">{ "success": false, "error": "..." }</code>.
