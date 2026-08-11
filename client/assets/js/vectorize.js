@@ -1,6 +1,5 @@
 (function () {
   const TOKEN_KEY = 'pixelforge_token';
-  const TOOL_NAME = 'vectorize';
 
   const authGate = document.getElementById('auth-gate');
 
@@ -21,7 +20,12 @@
 
   const errorBanner = document.getElementById('error-banner');
 
-  const MAX_FILE_BYTES = 30 * 1024 * 1024;
+  const MAX_PROCESS_DIM = 1200;
+  const MIN_LOADER_MS = 650;
+
+  let baseName = 'vector';
+  let currentSVG = '';
+  let cancelled = false;
 
   function showStage(stage) {
     [authGate, uploadStage, convertingStage, resultStage].forEach((el) => el.classList.add('is-hidden'));
@@ -32,30 +36,9 @@
   function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
   function init() {
-    if (!getToken()) { showStage(authGate); return; }
-
-    // Resume an in-progress job if the page was refreshed mid-processing.
-    const savedJobId = window.PixelForgeJobPoller.loadJobId(TOOL_NAME);
-    if (savedJobId) {
-      showStage(convertingStage);
-      watchJob(savedJobId);
-      return;
-    }
-
-    // Restore the last completed result on a genuine reload, same as
-    // the other tools — but only the result, never re-trigger a charge.
-    if (window.PixelForgeJobPoller.isGenuineReload()) {
-      const last = window.PixelForgeJobPoller.loadLastResult(TOOL_NAME);
-      if (last) {
-        showResult(last.outputUrl, last.filename || 'image');
-        return;
-      }
-    } else {
-      window.PixelForgeJobPoller.clearLastResult(TOOL_NAME);
-    }
-
-    showStage(uploadStage);
+    showStage(getToken() ? uploadStage : authGate);
   }
+
 
   dropzone.addEventListener('click', () => fileInput.click());
   dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); });
@@ -63,11 +46,19 @@
   dropzone.addEventListener('drop', (e) => {
     e.preventDefault();
     dropzone.classList.remove('is-dragover');
-    handleFile(e.dataTransfer.files[0]);
+    readFile(e.dataTransfer.files[0]);
   });
-  fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+  fileInput.addEventListener('change', (e) => readFile(e.target.files[0]));
 
-  function handleFile(file) {
+  function fitWithinMax(w, h, maxDim) {
+    if (w <= maxDim && h <= maxDim) return { width: w, height: h };
+    const scale = maxDim / Math.max(w, h);
+    return { width: Math.round(w * scale), height: Math.round(h * scale) };
+  }
+
+  const MAX_FILE_BYTES = 30 * 1024 * 1024;
+
+  function readFile(file) {
     clearError();
     if (!file || !file.type.match(/^image\/(png|jpeg|jpg|webp)/)) {
       showError('Please choose a PNG, JPG, or WebP image.');
@@ -78,95 +69,64 @@
       return;
     }
     if (!getToken()) { showStage(authGate); return; }
+    cancelled = false;
 
+    baseName = file.name.replace(/\.[^.]+$/, '') || 'vector';
     convertingFilename.textContent = file.name;
     showStage(convertingStage);
-    uploadAndVectorize(file);
-  }
 
-  async function uploadAndVectorize(file) {
-    const token = getToken();
-    const form = new FormData();
-    form.append('image', file);
+    const img = new Image();
+    const reader = new FileReader();
 
-    try {
-      const res = await fetch('/api/tools/vectorize', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: form
-      });
+    reader.onload = (e) => {
+      img.onload = () => {
+        const startedAt = Date.now();
+        const { width, height } = fitWithinMax(img.naturalWidth, img.naturalHeight, MAX_PROCESS_DIM);
 
-      if (res.status === 401) {
-        localStorage.removeItem(TOKEN_KEY);
-        showStage(authGate);
-        return;
-      }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        const data = ctx.getImageData(0, 0, width, height).data;
 
-      const body = await res.json();
-      if (!body.success) {
-        showError(body.error || 'Could not start vectorization.');
-        showStage(uploadStage);
-        return;
-      }
+        const { svg, shapeCount, colorCount } = window.VectorTraceEngine.traceToSVG(
+          { data, width, height }
+        );
 
-      window.PixelForgeJobPoller.saveJobId(TOOL_NAME, body.jobId);
-      sessionStorage.setItem(`pixelforge_filename_${TOOL_NAME}`, file.name);
-      watchJob(body.jobId);
-    } catch (err) {
-      showError('Could not reach the server. Check your connection and try again.');
-      showStage(uploadStage);
-    }
-  }
+        const elapsed = Date.now() - startedAt;
+        const remainingDelay = Math.max(0, MIN_LOADER_MS - elapsed);
 
-  function watchJob(jobId) {
-    window.PixelForgeJobPoller.poll(jobId, getToken(), {
-      onCompleted: (outputUrl) => {
-        window.PixelForgeJobPoller.clearJobId(TOOL_NAME);
-        const filename = sessionStorage.getItem(`pixelforge_filename_${TOOL_NAME}`) || 'image';
-        window.PixelForgeJobPoller.saveLastResult(TOOL_NAME, { outputUrl, filename });
-        if (window.PixelForgeCreditsBadge) window.PixelForgeCreditsBadge.refresh();
-        showResult(outputUrl, filename);
-      },
-      onFailed: (errorMessage) => {
-        window.PixelForgeJobPoller.clearJobId(TOOL_NAME);
-        showError(errorMessage || 'Vectorization failed. Please try again.');
-        showStage(uploadStage);
-      },
-      onAuthError: () => {
-        localStorage.removeItem(TOKEN_KEY);
-        window.PixelForgeJobPoller.clearJobId(TOOL_NAME);
-        showStage(authGate);
-      }
-    });
-  }
+        setTimeout(() => {
+          if (cancelled) return;
+          currentSVG = svg;
+          resultPreview.innerHTML = svg;
+          resultFilename.textContent = file.name;
+          resultShapes.textContent = `${shapeCount} shape${shapeCount === 1 ? '' : 's'} · ${colorCount} colors`;
 
-  function showResult(outputUrl, filename) {
-    const baseName = filename.replace(/\.[^.]+$/, '') || 'vector';
-    resultFilename.textContent = filename;
-    resultShapes.textContent = '';
+          const blob = new Blob([svg], { type: 'image/svg+xml' });
+          downloadBtn.href = URL.createObjectURL(blob);
+          downloadBtn.download = `${baseName}.svg`;
 
-    // The result is a hosted SVG file (Replicate output) rather than
-    // inline markup, so it's shown as an image preview and downloaded
-    // by fetching the actual file — unlike the old client-side version,
-    // which had the raw SVG markup available locally to inject directly.
-    resultPreview.innerHTML = `<img src="${outputUrl}" alt="Vectorized result" style="max-width:100%; max-height:100%; object-fit:contain;">`;
-    downloadBtn.href = `/api/tools/download?url=${encodeURIComponent(outputUrl)}&filename=${encodeURIComponent(baseName + '.svg')}`;
-    downloadBtn.removeAttribute('download');
-    downloadBtn.setAttribute('download', `${baseName}.svg`);
-
-    showStage(resultStage);
+          showStage(resultStage);
+        }, remainingDelay);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   cancelBtn.addEventListener('click', () => {
-    window.PixelForgeJobPoller.clearJobId(TOOL_NAME);
+    cancelled = true;
     fileInput.value = '';
+    currentSVG = '';
     clearError();
     showStage(uploadStage);
   });
 
   startOverBtn.addEventListener('click', () => {
-    window.PixelForgeJobPoller.clearLastResult(TOOL_NAME);
     fileInput.value = '';
+    currentSVG = '';
     clearError();
     showStage(uploadStage);
   });
