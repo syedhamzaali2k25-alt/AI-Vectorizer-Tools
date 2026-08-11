@@ -1,6 +1,14 @@
 const express = require('express');
 const asyncLib = require('async');
-const archiver = require('archiver');
+let archiver;
+
+async function getArchiver() {
+  if (!archiver) {
+    const module = await import('archiver');
+    archiver = module.default || module;
+  }
+  return archiver;
+}
 const { requireAuthOrApiKey } = require('../middleware/auth');
 const { requirePaidPlan } = require('../middleware/plangate');
 const { uploadBulk, MAX_BATCH_FILES } = require('../middleware/upload');
@@ -204,8 +212,11 @@ router.post('/download-zip', requireAuthOrApiKey, express.json(), async (req, re
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', 'attachment; filename="pixelforge-batch.zip"');
 
-  const archive = archiver('zip', { zlib: { level: 9 } });
-  archive.on('error', (err) => {
+const archiverLib = await getArchiver();
+
+const archive = archiverLib('zip', {
+  zlib: { level: 9 }
+});  archive.on('error', (err) => {
     console.error('[download-zip] archive error:', err);
     if (!res.headersSent) res.status(500).end();
   });
