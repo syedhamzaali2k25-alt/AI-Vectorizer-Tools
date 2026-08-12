@@ -86,7 +86,8 @@ const cleanUrlMap = {
   '/dashboard': 'dashboard.html',
   '/login': 'login.html',
   '/signup': 'signup.html',
-  '/oauth-complete': 'oauth-complete.html'
+  '/oauth-complete': 'oauth-complete.html',
+  '/blog/how-to-change-logo-color-without-photoshop': 'how-to-change-logo-color-without-photoshop.html'
 };
 
 for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {
