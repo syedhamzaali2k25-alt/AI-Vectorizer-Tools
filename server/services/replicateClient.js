@@ -135,10 +135,30 @@ async function expandImageViaReplicate(paddedImageUrl, maskUrl, prompt, apiToken
   ));
 }
 
+/**
+ * Vectorizes an image into an SVG using Recraft's vectorize model.
+ * NOTE: the exact input field name(s) this model expects haven't been
+ * independently verified against Replicate's own API page for this
+ * specific model — confirm the schema there ("Run with API" / schema
+ * tab on the model's Replicate page) before relying on this in
+ * production, and adjust `{ image: imageUrl }` below if the actual
+ * field name differs.
+ */
+async function vectorizeViaReplicate(imageUrl, apiToken, opts) {
+  return withRateLimitRetry(() => runReplicateModel(
+    'recraft-ai',
+    'recraft-vectorize',
+    { image: imageUrl },
+    apiToken,
+    opts
+  ));
+}
+
 module.exports = {
   runReplicateModel,
   runReplicateVersionedModel,
   removeBackgroundViaReplicate,
   upscaleViaReplicate,
-  expandImageViaReplicate
+  expandImageViaReplicate,
+  vectorizeViaReplicate
 };

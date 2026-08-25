@@ -36,7 +36,7 @@ const { upload, uploadWithMask } = require('../middleware/upload');
 const User = require('../models/User');
 const AiUsage = require('../models/AiUsage');
 const { stageFile, getPublicBaseUrl, cleanup, TEMP_DIR } = require('../services/tempHost');
-const { removeBackgroundViaReplicate, upscaleViaReplicate, expandImageViaReplicate } = require('../services/replicateClient');
+const { removeBackgroundViaReplicate, upscaleViaReplicate, expandImageViaReplicate, vectorizeViaReplicate } = require('../services/replicateClient');
 const { removeWatermarkAutomatic } = require('../services/dewatermarkClient');
 const path = require('path');
 const fs = require('fs');
@@ -46,13 +46,20 @@ const router = express.Router();
 // Serves temporarily-staged uploads so external APIs (which need a public
 // URL, not raw bytes) can fetch them. Deleted right after use.
 router.get('/temp/:id', (req, res) => {
-  const filePath = path.join(TEMP_DIR, req.params.id);
+  // Some Replicate models (and possibly Replicate's own fetch step)
+  // append a file extension to the URL they request, expecting it to
+  // look like a normal image URL — even though the id itself (and the
+  // actual staged file on disk) has no extension. Stripping any
+  // trailing extension here means the lookup still finds the right
+  // file regardless of whether one was appended.
+  const rawId = req.params.id.replace(/\.[a-zA-Z0-9]+$/, '');
+  const filePath = path.join(TEMP_DIR, rawId);
   if (!filePath.startsWith(TEMP_DIR)) return res.status(400).send('Invalid id');
 
   try {
     const data = fs.readFileSync(filePath);
-    const ext = path.extname(filePath).toLowerCase();
-    const mime = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' }[ext] || 'application/octet-stream';
+    const requestedExt = path.extname(req.params.id).toLowerCase();
+    const mime = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' }[requestedExt] || 'application/octet-stream';
     res.type(mime).send(data);
   } catch (err) {
     if (err.code === 'ENOENT') {
@@ -63,28 +70,12 @@ router.get('/temp/:id', (req, res) => {
   }
 });
 
-/**
- * Fire-and-forget wrapper for the background half of a job. The HTTP
- * response has already been sent by the time this runs, so nothing here
- * can talk back to that original request — every outcome (success or
- * failure) must be recorded via the job row itself, which is what the
- * frontend is polling. The outer .catch is only a safety net for a truly
- * unexpected bug slipping past the inner try/catch — it stops that from
- * crashing the whole process with an unhandled rejection.
- */
 function runInBackground(asyncFn) {
   asyncFn().catch((err) => {
     console.error('[job] Unexpected error in background processing:', err);
   });
 }
 
-/**
- * Read-only balance check before creating a job — we don't want to spin
- * up a job (and call an external API) for someone who clearly can't pay
- * for it. This is a UX nicety, not the real enforcement: actual deduction
- * still happens atomically in User.deductCredits after success, which is
- * what actually prevents overspending if e.g. two jobs somehow race.
- */
 async function hasEnoughCredits(userId, required) {
   const user = await User.findById(userId);
   return !!user && user.credits >= required;
@@ -117,10 +108,6 @@ router.post('/bg-remove', requireAuthOrApiKey, upload.single('image'), async (re
       const result = await removeBackgroundViaReplicate(publicUrl, apiToken);
       const updated = await User.deductCredits(req.user.id, CREDITS_REQUIRED);
       if (!updated) {
-        // Credits ran out between the earlier check and now (e.g. another
-        // tab's job finished first) — the AI work still succeeded, so we
-        // honor the result rather than throwing it away, but don't charge
-        // for what the user can no longer afford.
         await AiUsage.markJobCompleted(job.id, result.outputUrl, 0);
       } else {
         await AiUsage.markJobCompleted(job.id, result.outputUrl, CREDITS_REQUIRED);
@@ -189,11 +176,6 @@ router.post('/watermark-remove', requireAuthOrApiKey, upload.single('image'), as
     return res.status(402).json({ success: false, error: 'Not enough credits. Upgrade your plan or wait for your next billing cycle.' });
   }
 
-  // No temp-hosting needed here — Dewatermark takes raw bytes directly —
-  // but the raw buffer can't be handed to the background continuation
-  // after res.json() the way a URL can, since req.file is tied to this
-  // request's lifecycle. Copying the bytes into a plain Buffer first
-  // keeps them alive independently of the request object.
   const imageBuffer = Buffer.from(req.file.buffer);
   const mimetype = req.file.mimetype;
 
@@ -226,25 +208,6 @@ router.post('/expand', requireAuthOrApiKey, uploadWithMask, async (req, res) => 
     return res.status(500).json({ success: false, error: 'Server is missing REPLICATE_API_TOKEN — set it in .env' });
   }
 
-  // Diffusion-based outpainting (FLUX Fill Pro) needs *some* text
-  // description to know what to generate in the new area — an empty
-  // prompt was found to produce a blank/neutral fill instead of actually
-  // extending the scene. Default to a generic instruction when the user
-  // doesn't type one, rather than sending an empty string.
-  // Improved default: FLUX is very good at rendering text — good enough
-  // that words like "photoshoot" or "fashion" in a prompt can make it
-  // think it should generate a poster/caption instead of just extending
-  // the photo (confirmed in testing — a user-written content-description
-  // prompt produced literal title-card text over the new area). The
-  // "no text" safety phrase is appended to EVERY prompt used — default or
-  // user-typed — so this doesn't just protect the no-prompt case, it
-  // protects any custom prompt too, without the user needing to know to
-  // add it themselves.
-  // Both real failures observed so far involved the model inventing new
-  // PEOPLE in the generated area (a grid of unrelated faces, then a
-  // second person's face) instead of just continuing the background —
-  // explicitly telling it not to do that is a direct, targeted fix for
-  // the specific failure pattern actually seen, not just a general hope.
   const SAFETY_SUFFIX = ', photorealistic, seamless, preserve the original subject exactly as-is with no alterations, do not modify, duplicate, or clone any person already in the image, absolutely no additional people, no cloned or repeated human figures, no new faces, no text, no logos, no watermarks, no captions, no duplicated objects, extend ONLY the empty background, road, sky, water, or scenery — never generate any new person or figure of any kind, matching perspective, lighting, shadows, colors and textures of the existing background';
   const DEFAULT_EXPAND_PROMPT = 'extend the background and environment naturally, matching the style, lighting, colors, and textures already visible in the photo';
   const userPrompt = req.body.prompt?.trim();
@@ -277,25 +240,48 @@ router.post('/expand', requireAuthOrApiKey, uploadWithMask, async (req, res) => 
   });
 });
 
-// --- Step 10: still a placeholder ---
-const PENDING_TOOLS = [
-  { path: 'vectorize', name: 'Vectorizer', credits: 1 }
-];
+// --- Vectorizer (Replicate: recraft-ai/recraft-vectorize) ---
+// Launch promo: free through the date below, then 1 credit per image.
+const VECTORIZE_FREE_UNTIL = new Date('2026-10-30T00:00:00Z');
+const VECTORIZE_CREDITS = 1;
 
-PENDING_TOOLS.forEach(({ path: toolPath, name, credits }) => {
-  router.post(`/${toolPath}`, requireAuthOrApiKey, upload.single('image'), async (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ success: false, error: 'No image file uploaded (expected field name "image")' });
+router.post('/vectorize', requireAuthOrApiKey, upload.single('image'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, error: 'No image file uploaded (expected field name "image")' });
+  }
+
+  const apiToken = process.env.REPLICATE_API_TOKEN;
+  if (!apiToken) {
+    return res.status(500).json({ success: false, error: 'Server is missing REPLICATE_API_TOKEN — set it in .env' });
+  }
+
+  const isFreePeriod = Date.now() < VECTORIZE_FREE_UNTIL.getTime();
+  const creditsRequired = isFreePeriod ? 0 : VECTORIZE_CREDITS;
+
+  if (creditsRequired > 0 && !(await hasEnoughCredits(req.user.id, creditsRequired))) {
+    return res.status(402).json({ success: false, error: 'Not enough credits. Upgrade your plan or wait for your next billing cycle.' });
+  }
+
+  const { id: tempId, filePath: tempPath } = stageFile(req.file.buffer, req.file.mimetype);
+  const publicUrl = `${getPublicBaseUrl(req)}/api/tools/temp/${tempId}`;
+
+  const job = await AiUsage.createJob(req.user.id, 'vectorize', publicUrl);
+  res.json({ success: true, jobId: job.id });
+
+  runInBackground(async () => {
+    try {
+      const result = await vectorizeViaReplicate(publicUrl, apiToken);
+      if (creditsRequired > 0) {
+        const updated = await User.deductCredits(req.user.id, creditsRequired);
+        await AiUsage.markJobCompleted(job.id, result.outputUrl, updated ? creditsRequired : 0);
+      } else {
+        await AiUsage.markJobCompleted(job.id, result.outputUrl, 0);
+      }
+    } catch (err) {
+      await AiUsage.markJobFailed(job.id, err.message);
+    } finally {
+      await cleanup(tempPath);
     }
-
-    if (!(await hasEnoughCredits(req.user.id, credits))) {
-      return res.status(402).json({ success: false, error: 'Not enough credits for this tool. Upgrade your plan or wait for your next billing cycle.' });
-    }
-
-    res.status(501).json({
-      success: false,
-      error: `${name} is not implemented yet — this route is a placeholder.`
-    });
   });
 });
 
@@ -307,12 +293,6 @@ PENDING_TOOLS.forEach(({ path: toolPath, name, credits }) => {
  * route fetches the image server-side (no CORS restriction between
  * servers) and streams it back with a Content-Disposition header, which
  * reliably triggers a real download regardless of the original URL's origin.
- *
- * No requireAuth here deliberately: by this point the real work (credits,
- * AI processing) is already done — this only re-serves an already-public,
- * temporary Replicate URL with a nicer filename attached. Restricting to
- * a small allow-list of hosts keeps this from being usable as a general
- * open proxy for arbitrary URLs.
  */
 const ALLOWED_DOWNLOAD_HOSTS = ['replicate.delivery'];
 
