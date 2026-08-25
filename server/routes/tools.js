@@ -63,6 +63,19 @@ router.get('/temp/:id', (req, res) => {
     res.type(mime).send(data);
   } catch (err) {
     if (err.code === 'ENOENT') {
+      // Temporary diagnostic - remove once the 404 is resolved. Shows
+      // exactly what TEMP_DIR resolves to on this server, and what
+      // files (if any) are actually sitting in it right now, so we can
+      // tell a wrong-path problem apart from a genuine "already gone"
+      // race condition.
+      console.error('[temp route diagnostic] 404 for id:', req.params.id, '-> looked in:', filePath);
+      console.error('[temp route diagnostic] TEMP_DIR resolves to:', TEMP_DIR);
+      try {
+        const filesPresent = fs.readdirSync(TEMP_DIR);
+        console.error('[temp route diagnostic] Files currently in TEMP_DIR:', filesPresent);
+      } catch (dirErr) {
+        console.error('[temp route diagnostic] Could not read TEMP_DIR itself:', dirErr.message);
+      }
       return res.status(404).send('Not found or already used');
     }
     console.error('[temp route] Failed to read staged file:', filePath, err.message);
