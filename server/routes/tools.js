@@ -46,14 +46,10 @@ const router = express.Router();
 // Serves temporarily-staged uploads so external APIs (which need a public
 // URL, not raw bytes) can fetch them. Deleted right after use.
 router.get('/temp/:id', (req, res) => {
-  // Some Replicate models (and possibly Replicate's own fetch step)
-  // append a file extension to the URL they request, expecting it to
-  // look like a normal image URL — even though the id itself (and the
-  // actual staged file on disk) has no extension. Stripping any
-  // trailing extension here means the lookup still finds the right
-  // file regardless of whether one was appended.
-  const rawId = req.params.id.replace(/\.[a-zA-Z0-9]+$/, '');
-  const filePath = path.join(TEMP_DIR, rawId);
+  // The staged file on disk is saved WITH its extension already
+  // (confirmed via diagnostic logging — e.g. "abc123.png" is the real
+  // filename on disk), so the id is used exactly as requested.
+  const filePath = path.join(TEMP_DIR, req.params.id);
   if (!filePath.startsWith(TEMP_DIR)) return res.status(400).send('Invalid id');
 
   try {
