@@ -87,7 +87,11 @@ const cleanUrlMap = {
   '/login': 'login.html',
   '/signup': 'signup.html',
   '/oauth-complete': 'oauth-complete.html',
-  '/blog/how-to-change-logo-color-without-photoshop': 'how-to-change-logo-color-without-photoshop.html'
+  '/blog/how-to-change-logo-color-without-photoshop': 'how-to-change-logo-color-without-photoshop.html',
+  '/blog/convert-png-to-svg': 'convert-png-to-svg.html',
+  '/blog/convert-eps-to-svg': 'convert-eps-to-svg.html',
+  '/blog/convert-image-to-vector': 'convert-image-to-vector.html',
+  '/blog/what-does-vectorized-mean': 'what-does-vectorized-mean.html'
 };
 
 for (const [cleanPath, realFile] of Object.entries(cleanUrlMap)) {

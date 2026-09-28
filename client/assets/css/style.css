@@ -1897,6 +1897,134 @@ input[type="color"].color-input {
   object-fit: contain;
 }
 
+/* ---------- Blog content list (icon bullet cards, append to style.css) ---------- */
+.content-list {
+  margin: 4px 0 22px;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.content-list li {
+  list-style: none;
+  position: relative;
+  padding: 13px 16px 13px 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.content-list li:hover {
+  transform: translateX(4px);
+  border-color: rgba(109, 94, 247, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+}
+.content-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.content-list li a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(79, 140, 255, 0.4);
+  text-underline-offset: 3px;
+}
+.content-list li a:hover {
+  color: var(--primary);
+  text-decoration-color: var(--primary);
+}
+
+/* ---------- Problem → fix cards (append to style.css) ---------- */
+.fix-list {
+  margin: 4px 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fix-item {
+  position: relative;
+  padding: 14px 18px 14px 22px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-image: var(--gradient) 1;
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  transition: background 0.2s ease;
+}
+.fix-item:hover { background: rgba(255, 255, 255, 0.05); }
+.fix-item strong { color: var(--text); display: inline-block; margin-bottom: 2px; }
+.fix-item .arrow { color: var(--accent); font-weight: 700; margin: 0 6px; }
+
+/* ---------- Numbered step cards (how-to sections, append to style.css) ---------- */
+.step-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin: 4px 0 20px;
+}
+.step-card {
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.step-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(109, 94, 247, 0.4);
+}
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.step-card h4 {
+  font-size: 15.5px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.step-card p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+}
+.step-card p a { color: var(--accent); font-weight: 600; }
+
+@media (max-width: 768px) {
+  .step-list { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 992px) {
   .container { max-width: 720px; padding: 0 20px; }
   .nav-logo-mark { height: 80px; }
